@@ -86,7 +86,13 @@ class Practice
 
     public function updatePharmacy(stdClass $params){
 	    $this->setPharmacyModel();
-	    $this->p->save($params);
+
+        // Ensures that the parameters contains data for the Pharmacies model
+        if(isset($params->name) ||
+            isset($params->transmit_method) ||
+            isset($params->email) ||
+            isset($params->active)) $this->p->save($params);
+
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
         return $params;
@@ -189,26 +195,36 @@ class Practice
 
     private function updateAddress($params)
     {
-	    $o = new stdClass();
-	    $o->id = $params->address_id;
-	    $o->line1 = $params->line1;
-	    $o->line2 = $params->line2;
-	    $o->city = $params->city;
-	    $o->state = $params->state;
-	    $o->zip = $params->zip;
-	    $o->plus_four = $params->plus_four;
-        $o->country = $params->country;
-        $this->address->save($o);
-	    unset($o);
-	    $params->address_full = Address::fullAddress(
-            $params->line1,
-            $params->line2,
-            $params->city,
-            $params->state,
-            $params->zip,
-            $params->plus_four,
-            $params->country
-        );
+        if(isset($params->line1) ||
+            isset($params->line2) ||
+            isset($params->city) ||
+            isset($params->state) ||
+            isset($params->zip) ||
+            isset($params->plus_four) ||
+            isset($params->coutry) ||
+            isset($params->address_id))
+        {
+            $o = new stdClass();
+            $o->id = $params->address_id;
+            $o->line1 = $params->line1;
+            $o->line2 = $params->line2;
+            $o->city = $params->city;
+            $o->state = $params->state;
+            $o->zip = $params->zip;
+            $o->plus_four = $params->plus_four;
+            $o->country = $params->country;
+            $this->address->save($o);
+            unset($o);
+            $params->address_full = Address::fullAddress(
+                $params->line1,
+                $params->line2,
+                $params->city,
+                $params->state,
+                $params->zip,
+                $params->plus_four,
+                $params->country
+            );
+        }
 	    return $params;
     }
 
@@ -296,41 +312,34 @@ class Practice
 	    return $params;
     }
 
-    private function updatePhones($params, $foreignType = ''){
-	    $p = new stdClass();
-	    $p->id = $params->phone_id;
-	    $p->country_code = $params->phone_country_code;
-	    $p->area_code = $params->phone_area_code;
-	    $p->prefix = $params->phone_prefix;
-	    $p->number = $params->phone_number;
-	    $p->number_type = 'phone';
-	    $p->foreign_type = $foreignType;
-	    $p->foreign_id = $params->id;
-	    $record = $this->phone->save($p);
-	    $params->phone_full = Phone::fullPhone(
-            $record->country_code,
-            $record->area_code,
-            $record->prefix,
-            $record->number
-        );
-	    unset($p, $record);
-	    $f = new stdClass();
-	    $f->id = $params->fax_id;
-	    $f->country_code = $params->fax_country_code;
-	    $f->area_code = $params->fax_area_code;
-	    $f->prefix = $params->fax_prefix;
-	    $f->number = $params->fax_number;
-	    $f->number_type = 'fax';
-	    $f->foreign_type = $foreignType;
-	    $f->foreign_id = $params->id;
-	    $record = $this->phone->save($f);
-	    $params->fax_full = Phone::fullPhone(
-            $record->country_code,
-            $record->area_code,
-            $record->prefix,
-            $record->number
-        );
-	    unset($f, $record);
+    private function updatePhones($params, $foreignType = '')
+    {
+        error_log(print_r($params,true));
+
+        if( isset($params->id) &&
+            isset($params->phone_country_code) ||
+            isset($params->phone_area_code) ||
+            isset($params->phone_prefix) ||
+            isset($params->phone_number))
+        {
+            $p = new stdClass();
+            $p->id = $params->id;
+            $p->country_code = $params->phone_country_code;
+            $p->area_code = $params->phone_area_code;
+            $p->prefix = $params->phone_prefix;
+            $p->number = $params->phone_number;
+            $p->number_type = 'phone';
+            $p->foreign_type = $foreignType;
+            $p->foreign_id = $params->id;
+            $record = $this->phone->save($p);
+            $params->phone_full = Phone::fullPhone(
+                $record->country_code,
+                $record->area_code,
+                $record->prefix,
+                $record->number
+            );
+            unset($p, $record);
+        }
 	    return $params;
     }
 }

@@ -152,6 +152,9 @@ Ext.define('App.model.administration.Pharmacies', {
             read: 'Practice.getPharmacies',
             create: 'Practice.addPharmacy',
             update: 'Practice.updatePharmacy'
+        },
+        writer: {
+            writeAllFields: true
         }
     }
 });

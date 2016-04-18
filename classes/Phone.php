@@ -27,20 +27,20 @@ class Phone
 		self::setAreaCodeSeparator();
 		self::setNumberSeparator();
 
-		$foo = '';
-		$foo .= self::isValid($countryCode) ? '+' . $countryCode . ' ' : '';
+		$PhoneConstruct = '';
+        $PhoneConstruct .= self::isValid($countryCode) ? '+' . $countryCode . ' ' : '';
 
 		if(strlen(self::$areaCodeSeparator) == 2){
 			$s = str_split(self::$areaCodeSeparator);
-			$foo .= self::isValid($areaCode) ? $s[0] . $areaCode . $s[1] . ' ' : '';
+            $PhoneConstruct .= self::isValid($areaCode) ? $s[0] . $areaCode . $s[1] . ' ' : '';
 		}else{
-			$foo .= self::isValid($areaCode) ? $areaCode . self::$areaCodeSeparator : '';
+            $PhoneConstruct .= self::isValid($areaCode) ? $areaCode . self::$areaCodeSeparator : '';
 		}
 
-		$foo .= self::isValid($prefix) ? $prefix . self::$numberSeparator : '';
-		$foo .= self::isValid($number) ? $number : '';
+        $PhoneConstruct .= self::isValid($prefix) ? $prefix . self::$numberSeparator : '';
+        $PhoneConstruct .= self::isValid($number) ? $number : '';
 
-		return trim($foo);
+		return trim($PhoneConstruct);
 	}
 
 

@@ -93,6 +93,11 @@ Ext.define('App.model.administration.Pharmacies', {
             store: false
         },
         {
+            name: 'phone_country_code',
+            type: 'string',
+            store: false
+        },
+        {
             name: 'phone_area_code',
             type: 'string',
             store: false

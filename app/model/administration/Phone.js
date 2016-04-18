@@ -52,7 +52,8 @@ Ext.define('App.model.administration.Phone', {
         },
         {
             name: 'country_code',
-            type: 'string'
+            type: 'string',
+            len: 4
         },
         {
             name: 'area_code',
@@ -87,6 +88,7 @@ Ext.define('App.model.administration.Phone', {
             store: false,
             convert: function (v, record) {
                 return Ext.String.trim(
+                    record.data.country_code + ' ' +
                     record.data.area_code + '-' +
                     record.data.prefix + '-' +
                     record.data.number

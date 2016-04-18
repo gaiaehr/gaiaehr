@@ -62,7 +62,6 @@ class Practice
         if(!isset($this->i)) $this->i = MatchaModel::setSenchaModel('App.model.administration.InsuranceCompany');
 	}
 
-	//**********************************************************************************
 	public function getPharmacies(){
 	    $this->setPharmacyModel();
 		$records = array();
@@ -92,14 +91,11 @@ class Practice
             isset($params->transmit_method) ||
             isset($params->email) ||
             isset($params->active)) $this->p->save($params);
-
         $params = $this->updateAddress($params);
         $params = $this->updatePhones($params);
         return $params;
     }
 
-
-	//**********************************************************************************
     public function getLaboratories(){
 	    $this->setLaboratoryModel();
 	    $records = array();
@@ -129,8 +125,6 @@ class Practice
         return $params;
     }
 
-
-	//**********************************************************************************
     public function getInsurances(){
 	    $this->setInsuranceCompanyModel();
 	    $records = array();
@@ -248,16 +242,17 @@ class Practice
         );
         return $record;
     }
+
     private function getPhones($record){
 	    $p = $this->phone->load($record['phone_id'])->one();
-	    $record['phone_country_code'] = $p['country_code'];
+        $record['phone_country_code'] = $p['country_code'];
 	    $record['phone_area_code'] = $p['area_code'];
 	    $record['phone_prefix'] = $p['prefix'];
 	    $record['phone_number'] = $p['number'];
 	    $record['phone_full'] = Phone::fullPhone($p['country_code'], $p['area_code'], $p['prefix'], $p['number']);
 	    unset($p);
 	    $f = $this->phone->load($record['fax_id'])->one();
-	    $record['fax_country_code'] = $f['country_code'];
+        $record['fax_country_code'] = $f['country_code'];
 	    $record['fax_area_code'] = $f['area_code'];
 	    $record['fax_prefix'] = $f['prefix'];
 	    $record['fax_number'] = $f['number'];
@@ -267,9 +262,8 @@ class Practice
     }
 
     private function addPhones($params, $foreignType = ''){
-
 	    $p = new stdClass();
-	    $p->country_code = $params->phone_country_code;
+        $p->country_code = $params->phone_country_code;
 	    $p->area_code = $params->phone_area_code;
 	    $p->prefix = $params->phone_prefix;
 	    $p->number = $params->phone_number;
@@ -286,7 +280,7 @@ class Practice
         );
 		unset($p, $record);
 	    $f = new stdClass();
-	    $f->country_code = $params->fax_country_code;
+        $f->country_code = $params->fax_country_code;
 	    $f->area_code = $params->fax_area_code;
 	    $f->prefix = $params->fax_prefix;
 	    $f->number = $params->fax_number;
@@ -314,8 +308,6 @@ class Practice
 
     private function updatePhones($params, $foreignType = '')
     {
-        error_log(print_r($params,true));
-
         if( isset($params->id) &&
             isset($params->phone_country_code) ||
             isset($params->phone_area_code) ||
@@ -332,8 +324,8 @@ class Practice
             $p->foreign_type = $foreignType;
             $p->foreign_id = $params->id;
             $record = $this->phone->save($p);
+
             $params->phone_full = Phone::fullPhone(
-                $record->country_code,
                 $record->area_code,
                 $record->prefix,
                 $record->number

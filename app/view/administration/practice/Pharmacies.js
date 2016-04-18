@@ -118,6 +118,12 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 											width: 100,
 											value: _('phone')
 										},
+                                        {
+                                            xtype: 'textfield',
+                                            width: 20,
+                                            name: 'phone_country_code',
+                                            maxLength: 2
+                                        },
 										{
 											xtype: 'textfield',
 											width: 40,
@@ -130,7 +136,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 50,
+											width: 40,
 											name: 'phone_prefix'
 										},
 										{
@@ -140,7 +146,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 70,
+											width: 50,
 											name: 'phone_number'
 										}
 									]
@@ -157,6 +163,12 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 											width: 100,
 											value: _('fax')
 										},
+                                        {
+                                            xtype: 'textfield',
+                                            width: 20,
+                                            name: 'fax_country_code',
+                                            maxLength: 2
+                                        },
 										{
 											xtype: 'textfield',
 											width: 40,
@@ -169,7 +181,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 50,
+											width: 40,
 											name: 'fax_prefix'
 										},
 										{
@@ -179,7 +191,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 70,
+											width: 50,
 											name: 'fax_number'
 										}
 									]

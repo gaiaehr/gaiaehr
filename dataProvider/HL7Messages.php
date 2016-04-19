@@ -73,7 +73,7 @@ class HL7Messages {
 	/**
 	 * @var MatchaCUP Referring Provider/Physician
 	 */
-	private $r;
+	private $ReferringProvider;
 	/**
 	 * @var stdClass
 	 */
@@ -112,8 +112,8 @@ class HL7Messages {
             $this->e = MatchaModel::setSenchaModel('App.model.patient.Encounter');
         if(!isset($this->u))
             $this->u = MatchaModel::setSenchaModel('App.model.administration.User');
-        if(!isset($this->r))
-            $this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+        if(!isset($this->ReferringProvider))
+            $this->ReferringProvider = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
         if(!isset($this->m))
             $this->m = MatchaModel::setSenchaModel('App.model.administration.HL7Message');
         if(!isset($this->c))
@@ -169,10 +169,10 @@ class HL7Messages {
 		$this->setPID();
 		$this->setPV1();
 
-		// continue with message
+		// Continue with message
 		if($event == 'A04'){
 
-			// specialty
+			// Specialty
 			$obx = $this->hl7->addSegment('OBX');
 			$obx->setValue('1', 1);
 			$obx->setValue('2', 'CWE');
@@ -235,7 +235,6 @@ class HL7Messages {
 			$msgRecord->error = $response['message'];
 			$this->m->save($msgRecord);
 		}
-
 
 	}
 
@@ -706,12 +705,6 @@ class HL7Messages {
 			$pid->setValue('13.6', $ContactRecord['zip']); // Area/City Code
 			$pid->setValue('13.7', $phone); // LocalNumber
 		}
-//		if($this->notEmpty($this->patient->work_phone)){
-//		    $phone = $this->phone($this->patient->work_phone);
-//			$PID->setValue('13.2', 'PRN'); // PhoneNumber‐Home
-//			$PID->setValue('13.6', $phone['zip']); // Area/City Code
-//			$PID->setValue('13.7', $phone['number']); // LocalNumber
-//		}
 		if($this->notEmpty($this->patient->language)){
 			$pid->setValue('15.1', $this->patient->language);
 		}
@@ -806,10 +799,6 @@ class HL7Messages {
 		 * 0007 N Newborn (Birth in healthcare facility)
 		 * 0007 R Routine
 		 */
-//		if($this->notEmpty($this->encounter->admission_type)){
-//			$pv1->setValue('1', $this->encounter->admission_type);
-//		}
-
 		$repIndex = 0;
 		if($this->notEmpty($this->encounter->provider_uid)){
 			$provider = $this->u->load($this->encounter->provider_uid)->one();
@@ -833,21 +822,19 @@ class HL7Messages {
 				$pv1->setValue('7.2.1', $provider->lname, $repIndex); // Last Name
 				$pv1->setValue('7.3', $provider->fname, $repIndex); // First Name
 				$pv1->setValue('7.4', $provider->mname, $repIndex); // Middle Name
-				//$pv1->setValue('7.5', $provider->suffix, $repIndex); // Suffix Sr. Jr
 				$pv1->setValue('7.6', $provider->title, $repIndex); // Prefix Title
 				$repIndex++;
 			}
 		}
 
 		if($this->notEmpty($this->encounter->referring_physician)){
-			$referring = $this->r->load($this->encounter->referring_physician)->one();
+			$referring = $this->ReferringProvider->load($this->encounter->referring_physician)->one();
 			if($referring !== false){
 				$referring = (object) $referring;
 				$pv1->setValue('8.1', $referring->npi); // NPI
 				$pv1->setValue('8.2.1', $referring->lname); // Last Name
 				$pv1->setValue('8.3', $referring->fname); // First Name
 				$pv1->setValue('8.4', $referring->mname); // Middle Name
-//				$pv1->setValue('8.5', $provider->suffix); // Suffix Sr. Jr
 				$pv1->setValue('8.6', $referring->title); // Prefix Title
 			}
 		}

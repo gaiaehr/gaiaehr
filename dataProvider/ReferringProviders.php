@@ -17,24 +17,25 @@
  */
 
 class ReferringProviders {
+
 	/**
 	 * @var MatchaCUP
 	 */
-	private $r;
+	private $ReferringPhysician;
 	/**
 	 * @var MatchaCUP
 	 */
 	private $f;
 
 	function __construct(){
-        if(!isset($this->r))
-            $this->r = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
+        if(!isset($this->ReferringPhysician))
+            $this->ReferringPhysician = MatchaModel::setSenchaModel('App.model.administration.ReferringProvider');
         if(!isset($this->f))
             $this->f = MatchaModel::setSenchaModel('App.model.administration.ReferringProviderFacility');
 	}
 
 	public function getReferringProviders($params){
-		return $this->r->load($params)->all();
+		return $this->ReferringPhysician->load($params)->all();
 	}
 
 	public function getReferringProvider($params){
@@ -43,15 +44,15 @@ class ReferringProviders {
 	}
 
 	public function addReferringProvider($params){
-		return $this->r->save($params);
+		return $this->ReferringPhysician->save($params);
 	}
 
 	public function updateReferringProvider($params){
-		return $this->r->save($params);
+		return $this->ReferringPhysician->save($params);
 	}
 
 	public function deleteReferringProvider($params){
-		return $this->r->destroy($params);
+		return $this->ReferringPhysician->destroy($params);
 	}
 
 	public function getReferringProviderFacilities($params){
@@ -79,16 +80,51 @@ class ReferringProviders {
 	}
 
 	public function getFacilities($record){
-		$foo = new stdClass();
-		$foo->filter[0] = new stdClass();
-		$foo->filter[0]->property = 'referring_provider_id';
+		$filter = new stdClass();
+        $filter->filter[0] = new stdClass();
+        $filter->filter[0]->property = 'referring_provider_id';
 		if(isset($record['data']) && $record['data'] !== false){
-			$foo->filter[0]->value = $record['data']['id'];
-			$record['data']['facilities'] = $this->f->load($foo)->all();
+            $filter->filter[0]->value = $record['data']['id'];
+			$record['data']['facilities'] = $this->f->load($filter)->all();
 		}elseif($record !== false){
-			$foo->filter[0]->value = $record['id'];
-			$record['facilities'] = $this->f->load($foo)->all();
+            $filter->filter[0]->value = $record['id'];
+			$record['facilities'] = $this->f->load($filter)->all();
 		}
 		return $record;
 	}
+
+
+    /**
+     * @param stdClass $params
+     * @return array
+     */
+    public function referringPhysicianLiveSearch(stdClass $params)
+    {
+        $conn = Matcha::getConn();
+        $whereValues = [];
+        $where = [];
+        error_log(print_r($params,true));
+
+        $queries = explode(' ', $params->query);
+        foreach($queries as $index => $query){
+            $query = trim($query);
+            $where[] = " (npi REGEXP :npi{$index} OR fname LIKE :fname{$index} OR lname LIKE :lname{$index} OR mname LIKE :mname{$index} OR ssn LIKE :ssn{$index} OR taxonomy LIKE :taxonomy{$index} OR email LIKE :email{$index}) ";
+
+            $whereValues[':fname'.$index] = $query . '%';
+            $whereValues[':lname'.$index] = $query . '%';
+            $whereValues[':mname'.$index] = $query . '%';
+            $whereValues[':taxonomy'.$index] = $query . '%';
+            $whereValues[':npi'.$index] = $query . '%';
+            $whereValues[':ss'.$index] = '%' . $query;
+        }
+        $sth = $conn->prepare('SELECT *
+ 								 FROM referring_providers WHERE ' . implode(' AND ', $where) . ' LIMIT 300');
+        $sth->execute($whereValues);
+        $providers = $sth->fetchAll(PDO::FETCH_ASSOC);
+        return [
+            'totals' => count($providers),
+            'rows' => array_slice($providers, $params->start, $params->limit)
+        ];
+
+    }
 }

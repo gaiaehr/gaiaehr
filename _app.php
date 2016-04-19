@@ -235,6 +235,7 @@ header("Access-Control-Allow-Origin: *");
 		            'App.ux.LiveLabsSearch',
 		            'App.ux.LiveCDTSearch',
 		            'App.ux.LiveRXNORMAllergySearch',
+                    'App.ux.LiveReferringPhysicianSearch',
 		            'App.ux.LiveRXNORMSearch',
 		            'App.ux.LivePatientSearch',
                     'App.ux.LiveRadsSearch',

@@ -332,6 +332,9 @@ $API = [
             ],
             'deleteReferringProviderFacility' => [
                 'len' => 1
+            ],
+            'referringPhysicianLiveSearch' => [
+                'len' => 1
             ]
         ]
     ],

@@ -234,10 +234,6 @@ class CombosData {
 			'id' => 'billingFacilities',
 			'title' => 'Billing Facilities'
 		];
-		$records[] = [
-			'id' => 'referringPhysicians',
-			'title' => 'Referring Physicians'
-		];
 		return $records;
 	}
 
@@ -379,7 +375,12 @@ class CombosData {
 				'id' => 13,
 				'name' => 'CheckBox With Family History',
 				'value' => 'checkboxwithfamilyhistory'
-			]
+			],
+            13 => [
+                'id' => 14,
+                'name' => 'Referring Physician Search',
+                'value' => 'referringphysicianlivetsearch'
+            ]
 		];
 	}
 

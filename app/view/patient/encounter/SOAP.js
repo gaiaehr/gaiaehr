@@ -21,7 +21,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	requires: [
 		'App.ux.combo.Specialties',
 		'App.ux.grid.RowFormEditing',
-
+		'App.ux.grid.RowFormEditing',
 		'App.view.patient.encounter.CarePlanGoals',
 		'App.view.patient.encounter.CarePlanGoalsNewWindow',
 		'App.ux.LiveSnomedProcedureSearch',
@@ -298,19 +298,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							margin: '0 0 10 0',
 							anchor: '100%'
 						}),
-						//me.pField = Ext.widget('textarea', {
-						//	name: 'plan',
-						//	anchor: '100%'
-						//}),
-						/**
-						 * this is the grid to administer medication
-						 * during visit...  for now we are going to
-						 * document this via de medication tab
-						 */
-						//{
-						//	xtype: 'administeredmedications',
-						//	margin: '0 0 10 0'
-						//},
 						{
 							xtype: 'appointmentrequestgrid',
 							margin: '0 0 10 0'
@@ -399,8 +386,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			code_type: record[0].data.CodeType,
 			code_text: record[0].data.FullySpecifiedName
 		});
-
-		//form.findField('code_text').setValue(record[0].data.CodeType);
 	},
 
 	/**
@@ -585,18 +570,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	onPhTextAreaKey: function(field, e){
 		if(e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
-
-	///**
-	// * This will add a period to the end of the sentence if last character is not a . ? or
-	// * @param sentence
-	// * @return {*|String|String|String|String|String|String|String|String|String|String}
-	// */
-	//closeSentence: function(sentence){
-	//	var v = Ext.String.trim(sentence),
-	//		c = v.charAt(v.length - 1);
-	//	if(v == '') return v;
-	//	return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
-	//},
 
 	/**
 	 *

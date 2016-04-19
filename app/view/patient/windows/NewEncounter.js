@@ -67,7 +67,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
         var me = this,
             form = me.down('form').getForm(),
             record = form.getRecord();
-        
+
 		if(app.patient.pid)
         {
 			if(!record && a('add_encounters')){
@@ -87,7 +87,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
-							title: 'Oops! ' + _('open_encounters_found') + '...',
+							title: _('oops')+' '+ _('open_encounters_found') + '...',
 							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,

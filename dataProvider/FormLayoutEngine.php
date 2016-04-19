@@ -258,17 +258,15 @@ class FormLayoutEngine {
 		foreach($records as $item){
 			$opts = $this->getItemsOptions($item['id']);
 
-			foreach($opts as $opt => $val){
-				$item[$opt] = $val;
-			}
+			foreach($opts as $opt => $val) $item[$opt] = $val;
 
 			/**
 			 * If the item is a combo box lets create a store...
 			 */
-			if($item['xtype'] == 'combobox'){
-				$item = $this->getComboDefaults($item);
-				$item['store'] = $this->getStore($item['list_id']);
-			}
+            if($item['xtype'] == 'combobox'){
+                $item = $this->getComboDefaults($item);
+                $item['store'] = $this->getStore($item['list_id']);
+            }
 			if($item['xtype'] == 'datefield'){
 				$item['format'] = 'Y-m-d';
 			}
@@ -282,7 +280,6 @@ class FormLayoutEngine {
 			unset($item['id'], $item['form_id'], $item['parentId'], $item['x_index']);
 			array_push($items, $item);
 		}
-
 		return $items;
 	}
 
@@ -367,10 +364,3 @@ class FormLayoutEngine {
 		return $item;
 	}
 }
-
-//echo '<pre>';
-//$params = new stdClass;
-//$params->formToRender = '8';
-//$f = new FormLayoutEngine();
-////print_r($f->getFields($params));
-//print_r($f->getStore(126));

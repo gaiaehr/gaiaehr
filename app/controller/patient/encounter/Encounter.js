@@ -107,10 +107,6 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			show = false;
 
-		//say('reloadSpecialityCmbBySpecialty');
-		//say(specialties);
-		//say(specialty);
-
 		if(Ext.isNumeric(specialty) && specialty > 0){
 			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
 

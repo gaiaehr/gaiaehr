@@ -637,7 +637,17 @@ Ext.define('App.view.patient.Encounter', {
 						timer = me.timer(data.service_date, data.close_date),
 							patient = app.patient;
 
-						me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
+						me.updateTitle(
+                            patient.name +
+                            ' - ' +
+                            patient.sexSymbol +
+                            ' - ' +
+                            patient.age.str +
+                            ' - ' +
+                            Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') +
+                            ' (' +
+                            _('closed_encounter') +
+                            ')', app.patient.readOnly, timer);
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}

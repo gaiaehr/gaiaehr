@@ -108,14 +108,15 @@ class ReferringProviders {
         $queries = explode(' ', $params->query);
         foreach($queries as $index => $query){
             $query = trim($query);
-            $where[] = " (npi REGEXP :npi{$index} OR fname LIKE :fname{$index} OR lname LIKE :lname{$index} OR mname LIKE :mname{$index} OR ssn LIKE :ssn{$index} OR taxonomy LIKE :taxonomy{$index} OR email LIKE :email{$index}) ";
+            $where[] = " (npi REGEXP :npi{$index} OR fname LIKE :fname{$index} OR lname LIKE :lname{$index} OR mname LIKE :mname{$index} OR ssn LIKE :ssn{$index} OR taxonomy LIKE :taxonomy{$index} OR email LIKE :email{$index})";
 
             $whereValues[':fname'.$index] = $query . '%';
             $whereValues[':lname'.$index] = $query . '%';
             $whereValues[':mname'.$index] = $query . '%';
             $whereValues[':taxonomy'.$index] = $query . '%';
             $whereValues[':npi'.$index] = $query . '%';
-            $whereValues[':ss'.$index] = '%' . $query;
+            $whereValues[':ssn'.$index] = '%' . $query;
+            $whereValues[':email'.$index] = '%' . $query;
         }
         $sth = $conn->prepare('SELECT *
  								 FROM referring_providers WHERE ' . implode(' AND ', $where) . ' LIMIT 300');

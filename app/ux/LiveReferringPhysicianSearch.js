@@ -133,7 +133,7 @@ Ext.define('App.ux.LiveReferringPhysicianSearch', {
 			listConfig: {
 				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
-					return '<div class="search-item"><h3><span>{fullname}</span> {npi}</h3>';
+					return '<h3>{fullname}</h3> ({npi})';
 				}
 			},
 			pageSize: 10

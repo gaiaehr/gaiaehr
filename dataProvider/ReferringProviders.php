@@ -103,7 +103,6 @@ class ReferringProviders {
         $conn = Matcha::getConn();
         $whereValues = [];
         $where = [];
-        error_log(print_r($params,true));
 
         $queries = explode(' ', $params->query);
         foreach($queries as $index => $query){

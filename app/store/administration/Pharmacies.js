@@ -18,13 +18,5 @@
 
 Ext.define('App.store.administration.Pharmacies', {
 	model: 'App.model.administration.Pharmacies',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Practice.getPharmacies',
-			create: 'Practice.addPharmacy',
-			update: 'Practice.updatePharmacy'
-		}
-	}
+	extend: 'Ext.data.Store'
 });

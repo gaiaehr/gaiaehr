@@ -55,13 +55,13 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 								{
 									xtype: 'textfield',
 									fieldLabel: _('address'),
-									name: 'address',
+									name: 'line1',
 									width: 385
 								},
 								{
 									xtype: 'textfield',
 									fieldLabel: _('address_cont'),
-									name: 'address_cont',
+									name: 'line2',
 									width: 385
 								},
 								{

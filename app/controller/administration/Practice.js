@@ -31,7 +31,7 @@ Ext.define('App.controller.administration.Practice', {
 
 		me.control({
 			'practicepanel grid':{
-				activate: me.onPracticeGridPanelsActive
+				activate: me.onPracticeGridPanelsActive,
 			},
 			'practicepanel button[toggleGroup=insurance_number_group]':{
 				toggle: me.onInsuranceNumberGroupToggle
@@ -40,7 +40,6 @@ Ext.define('App.controller.administration.Practice', {
 				click: me.onAddBtnClick
 			}
 		});
-
 	},
 
 	onPracticeGridPanelsActive: function(grid){
@@ -57,7 +56,7 @@ Ext.define('App.controller.administration.Practice', {
 		});
 		grid.editingPlugin.startEdit(0, 0);
 	},
-    
+
 	onInsuranceNumberGroupToggle:function(btn, pressed){
 		var grid = btn.up('grid');
 

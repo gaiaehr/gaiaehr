@@ -1652,5 +1652,6 @@ $LANG = array(
     'delete_ip_rule'                        => 'Delete IP Rule',
     'rule'                                  => 'Rule',
     'network_rules'                         => 'Network rules',
-    'network_log'                           => 'Network log'
+    'network_log'                           => 'Network log',
+    'search_for_a_physician'                => 'Search physician'
 );

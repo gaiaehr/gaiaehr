@@ -61,7 +61,7 @@ header("Access-Control-Allow-Origin: *");
         <div id="msg-div"></div>
 
         <!-- Ext library -->
-		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all-debug.js" charset="utf-8"></script>
+		<script type="text/javascript" src="lib/<?php print EXTJS ?>/ext-all.js" charset="utf-8"></script>
 
 		<!-- JSrouter and Ext.deirect API files -->
 		<script src="JSrouter.php?site=<?php print SITE ?>" charset="utf-8"></script>
@@ -101,6 +101,8 @@ header("Access-Control-Allow-Origin: *");
 
             (function(){
 
+	            var head = document.getElementsByTagName('head')[0];
+
 	            /**
 	             * Ext Localization file
 	             * Using a anonymous function, in javascript.
@@ -119,7 +121,12 @@ header("Access-Control-Allow-Origin: *");
 	             */
 	            if(window.styles){
 		            for(s = 0; s < window.styles.length; s++){
-			            document.write('<link rel="stylesheet" type="text/style" href="'+ window.styles[s] + '?_v' + version + '"><\/link>');
+			            link  = document.createElement('link');
+			            link.rel  = 'stylesheet';
+			            link.type = 'text/css';
+			            link.href = window.styles[s];
+			            link.media = 'all';
+			            head.appendChild(link);
 		            }
 	            }
 

@@ -133,7 +133,8 @@ class Practice
         return $records;
     }
 
-    public function addInsurance(stdClass $params){
+    public function addInsurance(stdClass $params)
+    {
 	    $this->setInsuranceCompanyModel();
 	    $record = $this->i->save($params);
 	    $params->id = $record['id'];
@@ -155,7 +156,7 @@ class Practice
     public function savePhone($params)
     {
         $Phone = new stdClass();
-        if(isset($params->address_id)) $Phone = $this->phone->load($params->phone_id)->one();
+        if(isset($params->phone_id)) $Phone = $this->phone->load($params->phone_id)->one();
         if($Phone['foreign_id']) {
             $this->updatePhones($params);
         } else {
@@ -232,7 +233,8 @@ class Practice
 	    return $params;
     }
 
-    private function getAddress($record){
+    private function getAddress($record)
+    {
 	    $a = $this->address->load($record['address_id'])->one();
 	    $record['line1'] = $a['line1'];
 	    $record['line2'] = $a['line2'];
@@ -253,7 +255,8 @@ class Practice
         return $record;
     }
 
-    private function getPhones($record){
+    private function getPhones($record)
+    {
 	    $p = $this->phone->load($record['phone_id'])->one();
         $record['phone_country_code'] = $p['country_code'];
 	    $record['phone_area_code'] = $p['area_code'];
@@ -271,7 +274,8 @@ class Practice
         return $record;
     }
 
-    private function addPhones($params, $foreignType = ''){
+    private function addPhones($params, $foreignType = '')
+    {
 	    $p = new stdClass();
         $p->country_code = $params->phone_country_code;
 	    $p->area_code = $params->phone_area_code;
@@ -318,8 +322,9 @@ class Practice
 
     private function updatePhones($params, $foreignType = '')
     {
+        error_log(print_r($params,true));
         $p = new stdClass();
-        $p->id = $params->id;
+        $p->id = $params->phone_id;
         $p->country_code = $params->phone_country_code;
         $p->area_code = $params->phone_area_code;
         $p->prefix = $params->phone_prefix;
@@ -328,13 +333,30 @@ class Practice
         $p->foreign_type = $foreignType;
         $p->foreign_id = $params->id;
         $record = $this->phone->save($p);
-
         $params->phone_full = Phone::fullPhone(
+            $record->country_code,
             $record->area_code,
             $record->prefix,
             $record->number
         );
         unset($p, $record);
+        $f = new stdClass();
+        $f->id = $params->fax_id;
+        $f->country_code = $params->fax_country_code;
+        $f->area_code = $params->fax_area_code;
+        $f->prefix = $params->fax_prefix;
+        $f->number = $params->fax_number;
+        $f->number_type = 'fax';
+        $f->foreign_type = $foreignType;
+        $f->foreign_id = $params->id;
+        $record = $this->phone->save($f);
+        $params->fax_full = Phone::fullPhone(
+            $record->country_code,
+            $record->area_code,
+            $record->prefix,
+            $record->number
+        );
+        unset($f, $record);
 	    return $params;
     }
 }

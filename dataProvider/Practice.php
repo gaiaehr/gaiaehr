@@ -322,7 +322,6 @@ class Practice
 
     private function updatePhones($params, $foreignType = '')
     {
-        error_log(print_r($params,true));
         $p = new stdClass();
         $p->id = $params->phone_id;
         $p->country_code = $params->phone_country_code;

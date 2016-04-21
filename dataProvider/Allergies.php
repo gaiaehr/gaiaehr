@@ -65,7 +65,8 @@ class Allergies {
 		return $this->a->destroy($params);
 	}
 
-	public function getPatientAllergiesByPid($pid) {
+	public function getPatientAllergiesByPid($pid)
+    {
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
@@ -73,7 +74,8 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
-	public function getPatientAllergiesByEid($eid) {
+	public function getPatientAllergiesByEid($eid)
+    {
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'eid';
@@ -81,7 +83,8 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
-	public function getPatientActiveDrugAllergiesByPid($pid){
+	public function getPatientActiveDrugAllergiesByPid($pid)
+    {
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
@@ -93,7 +96,8 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
-	public function getPatientActiveDrugAllergiesByPidAndCode($pid, $code){
+	public function getPatientActiveDrugAllergiesByPidAndCode($pid, $code)
+    {
 		$params = new stdClass();
 		$params->filter[0] = new stdClass();
 		$params->filter[0]->property = 'pid';
@@ -109,7 +113,8 @@ class Allergies {
 		return $this->getPatientAllergies($params);
 	}
 
-	public function searchAllergiesData($params){
+	public function searchAllergiesData($params)
+    {
 		if(!isset($params->query)) return array();
 		$this->setAdminAllergyModel();
 		$sql = "SELECT * 

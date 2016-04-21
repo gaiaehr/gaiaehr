@@ -281,9 +281,9 @@ class Rxnorm
 		$sth = $this->db->prepare("SELECT *
 								 	 FROM rxnconso
 									WHERE SAB='RXNORM'
-									AND (TTY = 'IN' OR TTY = 'PIN' OR TTY = 'BN')
+									AND (TTY = 'IN' OR TTY = 'PIN' OR TTY = 'BN' OR TTY='MIN')
 									AND RXCUI LIKE :q1
-									OR STR LIKE :q2
+									AND STR LIKE :q2
 							 	 GROUP BY RXCUI LIMIT 100");
 		$sth->execute([
 			':q2' => '%'.$params->query.'%',

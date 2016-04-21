@@ -77,6 +77,7 @@ Ext.define('App.view.patient.Allergies', {
 	],
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {
 		autoCancel: false,
+        itemId: 'allergiesGridRowEditor',
 		errorSummary: false,
 		clicksToEdit: 1,
 		items: [

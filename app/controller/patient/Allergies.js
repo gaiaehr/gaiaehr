@@ -73,7 +73,8 @@ Ext.define('App.controller.patient.Allergies', {
 		var me = this;
 		me.control({
 			'patientallergiespanel': {
-				activate: me.onAllergiesGridActivate
+				activate: me.onAllergiesGridActivate,
+                select: me.onAllergiesGridSelect
 			},
 			'patientallergiespanel #addAllergyBtn': {
 				click: me.onAddAllergyBtnClick
@@ -198,6 +199,33 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 	},
 
+    /**
+     * When a row is selected, it will look for the RowEditor plugin and get the form, then set the apropreate COMBO
+     * for the Allergy, if it is a RxNorm medication or from the Allergy Combo. Finally set it's original value.
+     * @param grid
+     * @param record
+     * @param index
+     * @param eOpts
+     */
+    onAllergiesGridSelect: function(grid, record, index, eOpts){
+        var RowForm = Ext.ComponentQuery.query('patientallergiespanel')[0].editingPlugin.getEditor(),
+            AllergyMedicationCombo = RowForm.query('#allergyMedicationCombo')[0],
+            AllergySearchCombo = RowForm.query('#allergySearchCombo')[0];
+        if(record.data.allergy_code_type === 'RXNORM'){
+            AllergyMedicationCombo.setVisible(true);
+            AllergyMedicationCombo.setDisabled(false);
+            AllergySearchCombo.setVisible(false);
+            AllergySearchCombo.setDisabled(true);
+            AllergyMedicationCombo.setValue(record.data.allergy);
+        }else{
+            AllergyMedicationCombo.setVisible(false);
+            AllergyMedicationCombo.setDisabled(true);
+            AllergySearchCombo.setVisible(true);
+            AllergySearchCombo.setDisabled(false);
+            AllergySearchCombo.setValue(record.data.allergy);
+        }
+    },
+
 	onAllergiesGridActivate: function(){
 		var store = this.getAllergiesGrid().getStore();
 		store.clearFilter(true);
@@ -264,10 +292,10 @@ Ext.define('App.controller.patient.Allergies', {
 		encounter.set({review_allergies:true});
 		encounter.save({
 			success: function(){
-				app.msg('Sweet!', _('items_to_review_save_and_review'));
+				app.msg(_('sweet'), _('items_to_review_save_and_review'));
 			},
 			failure: function(){
-				app.msg('Oops!', _('items_to_review_entry_error'));
+				app.msg(_('oops'), _('items_to_review_entry_error'));
 			}
 		});
 	}

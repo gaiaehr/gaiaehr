@@ -60,10 +60,11 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
+			emptyText: _('medication_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				getInnerTpl: function(){

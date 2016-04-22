@@ -41616,7 +41616,7 @@ Ext.define('App.controller.patient.Medications', {
                 reset: me.onPatientMedicationUserLiveSearchReset
 			},
 
-			// administer controls
+			// Administrator controls
 			'#AdministeredMedicationsGrid': {
 				beforeedit: me.onAdministeredMedicationsGridBeforeEdit
 			},

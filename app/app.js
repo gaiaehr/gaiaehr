@@ -3297,10 +3297,11 @@ Ext.define('App.ux.LiveRXNORMAllergySearch', {
 
 		Ext.apply(this, {
 			store: me.store,
-			emptyText: _('search') + '...',
+			emptyText: _('medication_search') + '...',
 			typeAhead: false,
 			hideTrigger: true,
 			minChars: 3,
+            maxLength: 255,
 			listConfig: {
 				loadingText: _('searching') + '...',
 				getInnerTpl: function(){
@@ -8852,44 +8853,45 @@ Ext.define('App.ux.combo.FloorPlanZones', {
 	store: Ext.create('App.store.administration.FloorPlanZones')
 });
 Ext.define('App.ux.combo.FollowUp', {
-	extend       : 'Ext.form.ComboBox',
-	alias        : 'widget.mitos.followupcombo',
-	initComponent: function() {
-		var me = this;
+    extend       : 'Ext.form.ComboBox',
+    alias        : 'widget.mitos.followupcombo',
+    initComponent: function() {
+        var me = this;
 
-		Ext.define('FollowUpModel', {
-			extend: 'Ext.data.Model',
-			fields: [
-				{name: 'option_name', type: 'string' },
-				{name: 'option_value', type: 'string' }
-			],
-			proxy : {
-				type       : 'direct',
-				api        : {
-					read: CombosData.getOptionsByListId
-				},
-				extraParams: {
-					list_id: 90
-				}
-			}
-		});
+        Ext.define('FollowUpModel', {
+            extend: 'Ext.data.Model',
+            fields: [
+                {name: 'option_name', type: 'string' },
+                {name: 'option_value', type: 'string' }
+            ],
+            proxy : {
+                type       : 'direct',
+                api        : {
+                    read: CombosData.getOptionsByListId
+                },
+                extraParams: {
+                    list_id: 90
+                }
+            }
+        });
 
-		me.store = Ext.create('Ext.data.Store', {
-			model   : 'FollowUpModel',
-			autoLoad: true
-		});
+        me.store = Ext.create('Ext.data.Store', {
+            model   : 'FollowUpModel',
+            autoLoad: true
+        });
 
-		Ext.apply(this, {
-			editable    : false,
-			queryMode   : 'local',
-			displayField: 'option_name',
-			valueField  : 'option_value',
-			emptyText   : _('select'),
-			store       : me.store
-		}, null);
-		me.callParent(arguments);
-	}
+        Ext.apply(this, {
+            editable    : false,
+            queryMode   : 'local',
+            displayField: 'option_name',
+            valueField  : 'option_value',
+            emptyText   : _('select'),
+            store       : me.store
+        }, null);
+        me.callParent(arguments);
+    }
 });
+
 Ext.define('App.ux.combo.InsurancePayerType', {
 	extend       : 'Ext.form.ComboBox',
 	alias        : 'widget.mitos.insurancepayertypecombo',
@@ -9028,7 +9030,6 @@ Ext.define('App.ux.combo.LabsTypes', {
 
 		Ext.apply(this, {
 			editable    : false,
-			//queryMode   : 'local',
 			displayField: 'loinc_name',
 			valueField  : 'loinc_name',
 			emptyText   : _('select'),
@@ -9037,6 +9038,7 @@ Ext.define('App.ux.combo.LabsTypes', {
 		me.callParent(arguments);
 	}
 });
+
 Ext.define('App.ux.combo.Languages', {
 	extend: 'Ext.form.ComboBox',
 	alias: 'widget.languagescombo',
@@ -12834,6 +12836,11 @@ Ext.define('App.model.administration.Pharmacies', {
             store: false
         },
         {
+            name: 'phone_country_code',
+            type: 'string',
+            store: false
+        },
+        {
             name: 'phone_area_code',
             type: 'string',
             store: false
@@ -12893,9 +12900,13 @@ Ext.define('App.model.administration.Pharmacies', {
             read: 'Practice.getPharmacies',
             create: 'Practice.addPharmacy',
             update: 'Practice.updatePharmacy'
+        },
+        writer: {
+            writeAllFields: true
         }
     }
 });
+
 Ext.define('App.model.administration.PreventiveCare', {
     extend: 'Ext.data.Model',
     table: {
@@ -16920,7 +16931,7 @@ Ext.define('App.model.patient.Encounter', {
 		},
 		{
 			name: 'referring_physician',
-			type: 'string'
+			type: 'int'
 		}
 	],
 	idProperty: 'eid',
@@ -17532,7 +17543,12 @@ Ext.define('App.model.patient.Medications', {
 			name: 'created_date',
 			type: 'date',
 			dateFormat: 'Y-m-d H:i:s'
-		}
+		},
+        {
+            name: 'overridden',
+            type: 'bool',
+            comment: 'This is used by the Drug-To-Drug Interactions (MODULE)'
+        }
 	],
 	proxy: {
 		type: 'direct',
@@ -20513,7 +20529,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
         var me = this,
             form = me.down('form').getForm(),
             record = form.getRecord();
-        
+
 		if(app.patient.pid)
         {
 			if(!record && a('add_encounters')){
@@ -20533,7 +20549,7 @@ Ext.define('App.view.patient.windows.NewEncounter', {
 				Encounter.checkOpenEncountersByPid(app.patient.pid, function(provider, response){
 					if(response.result.encounter){
 						Ext.Msg.show({
-							title: 'Oops! ' + _('open_encounters_found') + '...',
+							title: _('oops')+' '+ _('open_encounters_found') + '...',
 							msg: _('do_you_want_to') + ' <strong>' + _('continue_creating_the_new_encounters') + '</strong><br>"' + _('click_no_to_review_encounter_history') + '"',
 							buttons: Ext.Msg.YESNO,
 							icon: Ext.Msg.QUESTION,
@@ -24635,44 +24651,11 @@ Ext.define('App.view.patient.Vitals', {
 			}
 		});
 
-
-//		{
-//			text: _('oxygen_saturation'),
-//			dataIndex: 'oxygen_saturation'
-//		},
-//		{
-//			text: _('head_circumference_in'),
-//			dataIndex: 'head_circumference_in',
-//			width: 150
-//		},
-//		{
-//			text: _('head_circumference_cm'),
-//			dataIndex: 'head_circumference_cm',
-//			width: 150,
-//			hidden: true
-//		},
-//		{
-//			text: _('waist_circumference_in'),
-//			dataIndex: 'waist_circumference_in',
-//			width: 150
-//		},
-//		{
-//			text: _('waist_circumference_cm'),
-//			dataIndex: 'waist_circumference_cm',
-//			width: 150,
-//			hidden: true
-//		},
-
 		columns.push({
 			text: _('bmi'),
 			dataIndex: 'bmi',
 			width: 50
 		});
-
-//		{
-//			text: _('bmi_status'),
-//			dataIndex: 'bmi_status'
-//		}
 
 		columns.push({
 			text: _('other_notes'),
@@ -29217,16 +29200,9 @@ Ext.define('App.view.administration.practice.Laboratories', {
 
 Ext.define('App.store.administration.Pharmacies', {
 	model: 'App.model.administration.Pharmacies',
-	extend: 'Ext.data.Store',
-	proxy: {
-		type: 'direct',
-		api: {
-			read: 'Practice.getPharmacies',
-			create: 'Practice.addPharmacy',
-			update: 'Practice.updatePharmacy'
-		}
-	}
+	extend: 'Ext.data.Store'
 });
+
 Ext.define('App.view.administration.practice.Pharmacies', {
 	extend: 'Ext.grid.Panel',
 	requires: [
@@ -29266,13 +29242,13 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 								{
 									xtype: 'textfield',
 									fieldLabel: _('address'),
-									name: 'address',
+									name: 'line1',
 									width: 385
 								},
 								{
 									xtype: 'textfield',
 									fieldLabel: _('address_cont'),
-									name: 'address_cont',
+									name: 'line2',
 									width: 385
 								},
 								{
@@ -29329,6 +29305,12 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 											width: 100,
 											value: _('phone')
 										},
+                                        {
+                                            xtype: 'textfield',
+                                            width: 20,
+                                            name: 'phone_country_code',
+                                            maxLength: 2
+                                        },
 										{
 											xtype: 'textfield',
 											width: 40,
@@ -29341,7 +29323,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 50,
+											width: 40,
 											name: 'phone_prefix'
 										},
 										{
@@ -29351,7 +29333,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 70,
+											width: 50,
 											name: 'phone_number'
 										}
 									]
@@ -29368,6 +29350,12 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 											width: 100,
 											value: _('fax')
 										},
+                                        {
+                                            xtype: 'textfield',
+                                            width: 20,
+                                            name: 'fax_country_code',
+                                            maxLength: 2
+                                        },
 										{
 											xtype: 'textfield',
 											width: 40,
@@ -29380,7 +29368,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 50,
+											width: 40,
 											name: 'fax_prefix'
 										},
 										{
@@ -29390,7 +29378,7 @@ Ext.define('App.view.administration.practice.Pharmacies', {
 										},
 										{
 											xtype: 'textfield',
-											width: 70,
+											width: 50,
 											name: 'fax_number'
 										}
 									]
@@ -30933,18 +30921,18 @@ Ext.define('App.view.administration.Lists', {
                         store.remove(record);
                         store.sync({
                             success:function(){
-                                me.msg('Sweet!', _('record_deleted'));
+                                me.msg(_('sweet'), _('record_deleted'));
                                 me.optionsStore.removeAll();
                             },
                             failure:function(){
-                                me.msg('Oops!', _('unable_to_delete') + ' "' + record.data.title, true);
+                                me.msg(_('oops'), _('unable_to_delete') + ' "' + record.data.title, true);
                             }
                         });
                     }
                 }
             });
         }else{
-            Ext.Msg.alert('Oops!', _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
+            Ext.Msg.alert(_('oops'), _('unable_to_delete') + ' "' + record.data.title + '"<br>' + _('list_currently_used_forms') + '.');
         }
     },
 
@@ -36356,7 +36344,7 @@ Ext.define('App.controller.administration.Practice', {
 
 		me.control({
 			'practicepanel grid':{
-				activate: me.onPracticeGridPanelsActive
+				activate: me.onPracticeGridPanelsActive,
 			},
 			'practicepanel button[toggleGroup=insurance_number_group]':{
 				toggle: me.onInsuranceNumberGroupToggle
@@ -36365,7 +36353,6 @@ Ext.define('App.controller.administration.Practice', {
 				click: me.onAddBtnClick
 			}
 		});
-
 	},
 
 	onPracticeGridPanelsActive: function(grid){
@@ -36383,7 +36370,6 @@ Ext.define('App.controller.administration.Practice', {
 		grid.editingPlugin.startEdit(0, 0);
 	},
 
-
 	onInsuranceNumberGroupToggle:function(btn, pressed){
 		var grid = btn.up('grid');
 
@@ -36395,10 +36381,8 @@ Ext.define('App.controller.administration.Practice', {
 		}
 	}
 
-
-
-
 });
+
 Ext.define('App.controller.administration.ReferringProviders', {
 	extend: 'Ext.app.Controller',
 
@@ -39179,7 +39163,8 @@ Ext.define('App.controller.patient.Allergies', {
 		var me = this;
 		me.control({
 			'patientallergiespanel': {
-				activate: me.onAllergiesGridActivate
+				activate: me.onAllergiesGridActivate,
+                select: me.onAllergiesGridSelect
 			},
 			'patientallergiespanel #addAllergyBtn': {
 				click: me.onAddAllergyBtnClick
@@ -39304,6 +39289,33 @@ Ext.define('App.controller.patient.Allergies', {
 		});
 	},
 
+    /**
+     * When a row is selected, it will look for the RowEditor plugin and get the form, then set the apropreate COMBO
+     * for the Allergy, if it is a RxNorm medication or from the Allergy Combo. Finally set it's original value.
+     * @param grid
+     * @param record
+     * @param index
+     * @param eOpts
+     */
+    onAllergiesGridSelect: function(grid, record, index, eOpts){
+        var RowForm = Ext.ComponentQuery.query('patientallergiespanel')[0].editingPlugin.getEditor(),
+            AllergyMedicationCombo = RowForm.query('#allergyMedicationCombo')[0],
+            AllergySearchCombo = RowForm.query('#allergySearchCombo')[0];
+        if(record.data.allergy_code_type === 'RXNORM'){
+            AllergyMedicationCombo.setVisible(true);
+            AllergyMedicationCombo.setDisabled(false);
+            AllergySearchCombo.setVisible(false);
+            AllergySearchCombo.setDisabled(true);
+            AllergyMedicationCombo.setValue(record.data.allergy);
+        }else{
+            AllergyMedicationCombo.setVisible(false);
+            AllergyMedicationCombo.setDisabled(true);
+            AllergySearchCombo.setVisible(true);
+            AllergySearchCombo.setDisabled(false);
+            AllergySearchCombo.setValue(record.data.allergy);
+        }
+    },
+
 	onAllergiesGridActivate: function(){
 		var store = this.getAllergiesGrid().getStore();
 		store.clearFilter(true);
@@ -39370,10 +39382,10 @@ Ext.define('App.controller.patient.Allergies', {
 		encounter.set({review_allergies:true});
 		encounter.save({
 			success: function(){
-				app.msg('Sweet!', _('items_to_review_save_and_review'));
+				app.msg(_('sweet'), _('items_to_review_save_and_review'));
 			},
 			failure: function(){
-				app.msg('Oops!', _('items_to_review_entry_error'));
+				app.msg(_('oops'), _('items_to_review_entry_error'));
 			}
 		});
 	}
@@ -45286,15 +45298,10 @@ Ext.define('App.view.patient.LabOrders', {
 		}
 	],
 	tbar: [
-//		me.eLabBtn =
 		{
 			text: _('eLab'),
 			iconCls: 'icoSend',
 			itemId:'electronicLabOrderBtn'
-//			scope: me,
-//			handler: function(){
-//				alert('TODO...');
-//			}
 		},
 		'-',
 		'->',
@@ -45304,25 +45311,16 @@ Ext.define('App.view.patient.LabOrders', {
 			iconCls: 'icoAdd',
 			action: 'encounterRecordAdd',
 			itemId:'newLabOrderBtn'
-//			scope: me,
-//			handler: me.onAddOrder
 		},
 		'-',
-//		me.labPrintBtn =
 		{
 			text: _('print'),
 			iconCls: 'icoPrint',
 			disabled: true,
 			margin: '0 5 0 0',
 			itemId:'printLabOrderBtn'
-//			scope: me,
-//			handler: me.onPrintOrder
 		}
 	]
-//	listeners: {
-//		scope: me,
-//		selectionchange: me.onSelectionChange
-//	}
 });
 
 Ext.define('App.view.patient.SupperBill', {
@@ -49686,6 +49684,7 @@ Ext.define('App.view.administration.Users', {
 		this.userStore.load();
 		callback(true);
 	}
+    
 });
 
 Ext.define('App.view.miscellaneous.AddressBook', {
@@ -53706,10 +53705,6 @@ Ext.define('App.controller.patient.encounter.Encounter', {
 		var me = this,
 			show = false;
 
-		//say('reloadSpecialityCmbBySpecialty');
-		//say(specialties);
-		//say(specialty);
-
 		if(Ext.isNumeric(specialty) && specialty > 0){
 			me.getEncounterSpecialtyCmb().setValue(eval(specialty));
 
@@ -55430,7 +55425,7 @@ Ext.define('App.view.patient.encounter.SOAP', {
 	requires: [
 		'App.ux.combo.Specialties',
 		'App.ux.grid.RowFormEditing',
-
+		'App.ux.grid.RowFormEditing',
 		'App.view.patient.encounter.CarePlanGoals',
 		'App.view.patient.encounter.CarePlanGoalsNewWindow',
 		'App.ux.LiveSnomedProcedureSearch',
@@ -55707,19 +55702,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 							margin: '0 0 10 0',
 							anchor: '100%'
 						}),
-						//me.pField = Ext.widget('textarea', {
-						//	name: 'plan',
-						//	anchor: '100%'
-						//}),
-						/**
-						 * this is the grid to administer medication
-						 * during visit...  for now we are going to
-						 * document this via de medication tab
-						 */
-						//{
-						//	xtype: 'administeredmedications',
-						//	margin: '0 0 10 0'
-						//},
 						{
 							xtype: 'appointmentrequestgrid',
 							margin: '0 0 10 0'
@@ -55808,8 +55790,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 			code_type: record[0].data.CodeType,
 			code_text: record[0].data.FullySpecifiedName
 		});
-
-		//form.findField('code_text').setValue(record[0].data.CodeType);
 	},
 
 	/**
@@ -55995,18 +55975,6 @@ Ext.define('App.view.patient.encounter.SOAP', {
 		if(e.getKey() == e.ENTER) this.onPhWindowSubmit();
 	},
 
-	///**
-	// * This will add a period to the end of the sentence if last character is not a . ? or
-	// * @param sentence
-	// * @return {*|String|String|String|String|String|String|String|String|String|String}
-	// */
-	//closeSentence: function(sentence){
-	//	var v = Ext.String.trim(sentence),
-	//		c = v.charAt(v.length - 1);
-	//	if(v == '') return v;
-	//	return ((c == '.' || c == '!' || c == '?') ? v : v + '. ');
-	//},
-
 	/**
 	 *
 	 * @param node
@@ -56160,6 +56128,7 @@ Ext.define('App.view.patient.Allergies', {
 	],
 	plugins: Ext.create('App.ux.grid.RowFormEditing', {
 		autoCancel: false,
+        itemId: 'allergiesGridRowEditor',
 		errorSummary: false,
 		clicksToEdit: 1,
 		items: [
@@ -57159,7 +57128,17 @@ Ext.define('App.view.patient.Encounter', {
 						timer = me.timer(data.service_date, data.close_date),
 							patient = app.patient;
 
-						me.updateTitle(patient.name + ' - ' + patient.sexSymbol + ' - ' + patient.age.str + ' - ' + Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') + ' (' + _('closed_encounter') + ')', app.patient.readOnly, timer);
+						me.updateTitle(
+                            patient.name +
+                            ' - ' +
+                            patient.sexSymbol +
+                            ' - ' +
+                            patient.age.str +
+                            ' - ' +
+                            Ext.Date.format(me.currEncounterStartDate, 'F j, Y, g:i:s a') +
+                            ' (' +
+                            _('closed_encounter') +
+                            ')', app.patient.readOnly, timer);
 						me.setButtonsDisabled(me.getButtonsToDisable(), true);
 					}
 				}

@@ -742,13 +742,13 @@ class HL7Messages {
 
         // Ethnicity
 		if($this->notEmpty($this->patient->ethnicity)) {
-            $ethnicityList = new stdClass();
-            $ethnicityList->filter[0] = new stdClass();
-            $ethnicityList->filter[0]->property = 'list_id';
-            $ethnicityList->filter[0]->value = '59';
-            $ComboListRecord = $this->ListOptions->load($ethnicityList)->one();
+//            $ethnicityList = new stdClass();
+//            $ethnicityList->filter[0] = new stdClass();
+//            $ethnicityList->filter[0]->property = 'list_id';
+//            $ethnicityList->filter[0]->value = '59';
+//            $ComboListRecord = $this->ListOptions->load($ethnicityList)->one();
             $pid->setValue('22.1', $this->patient->ethnicity);
-            $pid->setValue('22.3', $ComboListRecord['code_type']);
+            $pid->setValue('22.3', 'CDCREC');
 		}
 
 		if($this->notEmpty($this->patient->birth_place)){

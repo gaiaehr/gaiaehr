@@ -21,8 +21,8 @@ include_once(ROOT . '/dataProvider/Patient.php');
 include_once(ROOT . '/lib/HL7/HL7.php');
 include_once(ROOT . '/lib/HL7/HL7Client.php');
 
-class HL7Messages {
-
+class HL7Messages
+{
 	/**
 	 * @var PDO
 	 */
@@ -53,12 +53,6 @@ class HL7Messages {
      * @var MatchaCUP Encounter Services
      */
     private $EncounterServices;
-
-    /**
-     * Lists
-     * @var
-     */
-    private $ListOptions;
 
 	/**
 	 * @var MatchaCUP PatientImmunization
@@ -105,7 +99,8 @@ class HL7Messages {
 	 */
 	private $type;
 
-	function __construct() {
+	function __construct()
+    {
 		$this->hl7 = new HL7();
 		$this->conn = Matcha::getConn();
         if(!isset($this->p))
@@ -126,8 +121,6 @@ class HL7Messages {
             $this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
         if(!isset($this->f))
             $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
-        if(!isset($this->ListOptions))
-            $this->ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 
 	function broadcastADT($params)
@@ -310,7 +303,6 @@ class HL7Messages {
         {
             return ['success' => false];
         }
-
 	}
 
 	function sendVXU($params)
@@ -551,7 +543,8 @@ class HL7Messages {
         }
 	}
 
-	private function setMSH($includeNPI = false) {
+	private function setMSH($includeNPI = false)
+    {
 		$this->setEncounter();
 
 		// set these globally
@@ -574,7 +567,8 @@ class HL7Messages {
 		return $msh;
 	}
 
-	private function setEVN(){
+	private function setEVN()
+    {
 		$evn = $this->hl7->addSegment('EVN');
 		$evn->setValue('2.1', date('YmdHis'));
 		$evn->setValue('7.1', str_replace(' ', '', substr($this->from['name'], 0, 20)));
@@ -586,7 +580,8 @@ class HL7Messages {
 	 * @return Segments
 	 * @throws Exception
 	 */
-	private function setPID() {
+	private function setPID()
+    {
 
 		$this->patient = $this->p->load($this->patient)->one();
 
@@ -602,13 +597,6 @@ class HL7Messages {
 
 		$pid->setValue('1', 1);
 
-//		if($this->notEmpty($this->patient->pubpid)){
-//			$pid->setValue('2.3', $this->patient->pubpid);
-//		}else if($this->notEmpty($this->patient->pid)){
-//			$pid->setValue('2.3', $this->patient->pid);
-//		}
-//		if($this->notEmpty($this->patient->pubpid)){
-//			$pid->setValue('3.1', $this->patient->pubpid);
 		if($this->notEmpty($this->patient->pid)){
 			$pid->setValue('3.1', $this->patient->pid);
 		}
@@ -1105,6 +1093,3 @@ class HL7Messages {
 		return isset($var) && $var != '';
 	}
 }
-//print '<pre>';
-//$hl7 = new HL7Messages();
-//print_r($hl7->sendVXU());

@@ -742,11 +742,6 @@ class HL7Messages {
 
         // Ethnicity
 		if($this->notEmpty($this->patient->ethnicity)) {
-//            $ethnicityList = new stdClass();
-//            $ethnicityList->filter[0] = new stdClass();
-//            $ethnicityList->filter[0]->property = 'list_id';
-//            $ethnicityList->filter[0]->value = '59';
-//            $ComboListRecord = $this->ListOptions->load($ethnicityList)->one();
             $pid->setValue('22.1', $this->patient->ethnicity);
             $pid->setValue('22.3', 'CDCREC');
 		}
@@ -754,8 +749,14 @@ class HL7Messages {
 		if($this->notEmpty($this->patient->birth_place)){
 			$pid->setValue('23', $this->patient->birth_place);
 		}
+
+        // Birth Multiple
 		if($this->notEmpty($this->patient->birth_multiple)){
-			$pid->setValue('24', $this->patient->birth_multiple);
+            if($this->patient->birth_multiple){
+                $pid->setValue('24', 'Y');
+            }else{
+                $pid->setValue('24', 'N');
+            }
 		}
 		if($this->notEmpty($this->patient->birth_order)){
 			$pid->setValue('25', $this->patient->birth_order);

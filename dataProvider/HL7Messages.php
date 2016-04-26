@@ -54,6 +54,12 @@ class HL7Messages {
      */
     private $EncounterServices;
 
+    /**
+     * Lists
+     * @var
+     */
+    private $ListOptions;
+
 	/**
 	 * @var MatchaCUP PatientImmunization
 	 */
@@ -120,9 +126,12 @@ class HL7Messages {
             $this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
         if(!isset($this->f))
             $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if(!isset($this->ListOptions))
+            $this->ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 
-	function broadcastADT($params){
+	function broadcastADT($params)
+    {
 		$this->c->addFilter('active', 1);
 		$clients = $this->c->load()->all();
 
@@ -135,7 +144,6 @@ class HL7Messages {
 			$this->sendADT($foo, $params->event);
 			unset($foo);
 		}
-
 		return [ 'success' => true ];
 	}
 
@@ -144,7 +152,8 @@ class HL7Messages {
 	 * @param $event
 	 * @throws Exception
 	 */
-	function sendADT($params, $event){
+	function sendADT($params, $event)
+    {
 
 		$this->to = $params->to;
 		$this->from = $params->from;
@@ -191,7 +200,6 @@ class HL7Messages {
 			unset($obx);
 
 			// Age - Reportedx
-
 			$obx = $this->hl7->addSegment('OBX');
 			$obx->setValue('1', 2);
 			$obx->setValue('2', 'NM');
@@ -245,7 +253,8 @@ class HL7Messages {
 	 * @param $orderControl
 	 * @throws Exception
 	 */
-	function sendServiceORM($to, $from, $service, $orderControl){
+	function sendServiceORM($to, $from, $service, $orderControl)
+    {
         try
         {
             $service = (object) $service;
@@ -259,7 +268,7 @@ class HL7Messages {
             $msh = $this->setMSH();
             $msh->setValue('9.1', 'ORM');
             $msh->setValue('9.2', 'O01');
-    //		$msh->setValue('9.3', 'ORM_O01');
+            // $msh->setValue('9.3', 'ORM_O01');
             // PID
             $this->setPID();
             // PV1
@@ -268,7 +277,6 @@ class HL7Messages {
             $this->setORC($service, $orderControl);
             // OBR
             $this->setOBR($service, 1);
-
 
             if(is_array($service->dx_pointers)){
                 $dxIndex = 1;
@@ -305,7 +313,8 @@ class HL7Messages {
 
 	}
 
-	function sendVXU($params) {
+	function sendVXU($params)
+    {
         try
         {
             // set these globally to be used by MSH and PID
@@ -731,17 +740,17 @@ class HL7Messages {
             }
 		}
 
-		if($this->notEmpty($this->patient->ethnicity)){
-			if($this->patient->ethnicity == 'H'){
-				$pid->setValue('22.1', '2135-2');
-				$pid->setValue('22.3', 'CDCREC');
-			}elseif($this->patient->ethnicity == 'N'){
-				$pid->setValue('22.1', '2186-5');
-				$pid->setValue('22.3', 'CDCREC');
-			}else{
-				$pid->setValue('22.1', '$this->patient->ethnicity');
-			}
+        // Ethnicity
+		if($this->notEmpty($this->patient->ethnicity)) {
+            $ethnicityList = new stdClass();
+            $ethnicityList->filter[0] = new stdClass();
+            $ethnicityList->filter[0]->property = 'list_id';
+            $ethnicityList->filter[0]->value = '59';
+            $ComboListRecord = $this->ListOptions->load($ethnicityList)->one();
+            $pid->setValue('22.1', $this->patient->ethnicity);
+            $pid->setValue('22.3', $ComboListRecord['code_type']);
 		}
+
 		if($this->notEmpty($this->patient->birth_place)){
 			$pid->setValue('23', $this->patient->birth_place);
 		}

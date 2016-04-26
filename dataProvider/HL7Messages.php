@@ -261,7 +261,7 @@ class HL7Messages
             $msh = $this->setMSH();
             $msh->setValue('9.1', 'ORM');
             $msh->setValue('9.2', 'O01');
-            // $msh->setValue('9.3', 'ORM_O01');
+            
             // PID
             $this->setPID();
             // PV1

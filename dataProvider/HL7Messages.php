@@ -959,7 +959,8 @@ class HL7Messages
 	 * @param int $sequence
 	 * @throws Exception
 	 */
-	private function setOBR($observation, $sequence = 1){
+	private function setOBR($observation, $sequence = 1)
+    {
 
 		$obr = $this->hl7->addSegment('OBR');
 		$obr->setValue(1, $sequence);
@@ -1024,7 +1025,8 @@ class HL7Messages
 	}
 
 
-	private function setDG1($diagnosis, $sequence = '1'){
+	private function setDG1($diagnosis, $sequence = '1')
+    {
 		$diagnosis = explode(":", $diagnosis);
 		$type = $this->encounter->close_date == '0000-00-00 00:00:00' ? 'W' :'F';
 
@@ -1036,13 +1038,15 @@ class HL7Messages
 		$dg1->setValue('6', $type);
 	}
 
-	private function setEncounter(){
+	private function setEncounter()
+    {
 		$this->encounter = $this->e->load($this->encounter)->one();
 		if($this->encounter === false) return;
 		$this->encounter = (object) $this->encounter;
 	}
 
-	public function saveMsg() {
+	public function saveMsg()
+    {
 		$foo = new stdClass();
 		$foo->msg_type = $this->type;
 		$foo->message = $this->hl7->getMessage();

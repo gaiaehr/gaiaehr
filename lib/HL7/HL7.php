@@ -408,7 +408,7 @@ class HL7 {
 		$text = '';
 		switch($code){
 			case 'A':
-				$text = 'Hispanic or Latino';
+				$text = 'Separated';
 				break;
 			case 'D':
 				$text = 'Divorced';

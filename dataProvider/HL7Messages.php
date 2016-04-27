@@ -713,10 +713,17 @@ class HL7Messages
 		if($this->notEmpty($this->patient->language)){
 			$pid->setValue('15.1', $this->patient->language);
 		}
+        
+        // Marital Status
 		if($this->notEmpty($this->patient->marital_status)){
+            $list = new stdClass();
+            $list->filter[0] = new stdClass();
+            $list->filter[0]->property = 'list_id';
+            $list->filter[0]->value = '12';
+            $ComboListRecord = $this->ListOptions->load($list)->one();
 			$pid->setValue('16.1', $this->patient->marital_status); // EthnicGroup Identifier
 			$pid->setValue('16.2', $this->hl7->marital($this->patient->marital_status)); // EthnicGroup Text
-			$pid->setValue('16.3', 'CDCREC'); // Name of Coding System
+			$pid->setValue('16.3', $ComboListRecord['code_type']); // Name of Coding System
 		}
 		if($this->notEmpty($this->patient->pubaccount)){
 			$pid->setValue('18.1', $this->patient->pubaccount);
@@ -860,7 +867,8 @@ class HL7Messages
 		}
 	}
 
-	private function setORC($order, $orderControl){
+	private function setORC($order, $orderControl)
+    {
 		if($order === false) return;
 
 		$orc = $this->hl7->addSegment('ORC');

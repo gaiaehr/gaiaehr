@@ -54,6 +54,12 @@ class HL7Messages
      */
     private $EncounterServices;
 
+    /**
+     * Lists
+     * @var
+     */
+    private $ListOptions;
+
 	/**
 	 * @var MatchaCUP PatientImmunization
 	 */
@@ -121,6 +127,8 @@ class HL7Messages
             $this->c = MatchaModel::setSenchaModel('App.model.administration.HL7Client');
         if(!isset($this->f))
             $this->f = MatchaModel::setSenchaModel('App.model.administration.Facility');
+        if(!isset($this->ListOptions))
+            $this->ListOptions = MatchaModel::setSenchaModel('App.model.administration.ListOptions');
 	}
 
 	function broadcastADT($params)
@@ -261,7 +269,7 @@ class HL7Messages
             $msh = $this->setMSH();
             $msh->setValue('9.1', 'ORM');
             $msh->setValue('9.2', 'O01');
-            
+
             // PID
             $this->setPID();
             // PV1
@@ -730,8 +738,13 @@ class HL7Messages
 
         // Ethnicity
 		if($this->notEmpty($this->patient->ethnicity)) {
+            $ethnicityList = new stdClass();
+            $ethnicityList->filter[0] = new stdClass();
+            $ethnicityList->filter[0]->property = 'list_id';
+            $ethnicityList->filter[0]->value = '59';
+            $ComboListRecord = $this->ListOptions->load($ethnicityList)->one();
             $pid->setValue('22.1', $this->patient->ethnicity);
-            $pid->setValue('22.3', 'CDCREC');
+            $pid->setValue('22.3', $ComboListRecord['code_type']);
 		}
 
 		if($this->notEmpty($this->patient->birth_place)){

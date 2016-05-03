@@ -80,7 +80,11 @@ class Matcha {
 			if(self::$__conn === null){
 
 				// check for properties first.
-				if(!isset($databaseParameters['host']) && !isset($databaseParameters['name']) && !isset($databaseParameters['user']) && !isset($databaseParameters['pass']) && !isset($databaseParameters['app']))
+				if(!isset($databaseParameters['host']) &&
+                    !isset($databaseParameters['name']) &&
+                    !isset($databaseParameters['user']) &&
+                    !isset($databaseParameters['pass']) &&
+                    !isset($databaseParameters['app']))
 					throw new Exception('These parameters are obligatory: host="database ip or hostname", name="database name", user="database username", pass="database password", app="path of your sencha application"');
 
 				// Connect using regular PDO Matcha::connect Abstraction layer.
@@ -93,11 +97,15 @@ class Matcha {
 				$dbUser = (string)$databaseParameters['user'];
 				$dbPass = (string)$databaseParameters['pass'];
 
-				self::$__conn = new PDO('mysql:host=' . $host . ';port=' . $port . ';', $dbUser, $dbPass, array(
-					//PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-					PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
-					PDO::ATTR_PERSISTENT => false,
-				));
+				self::$__conn = new PDO(
+                    'mysql:host=' . $host . ';port=' . $port . ';',
+                    $dbUser,
+                    $dbPass, array(
+					    //PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+					    PDO::MYSQL_ATTR_LOCAL_INFILE => 1,
+					    PDO::ATTR_PERSISTENT => false,
+				    )
+                );
 
                 // Check if the current version of PDO::MySQL has this parameter available
                 // If not activate it.

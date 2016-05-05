@@ -70,7 +70,6 @@ Ext.define('App.controller.patient.CCD', {
 	},
 
 	onViewCcdBtnClick: function(btn){
-        say(app);
 		btn.up('panel').query('miframe')[0].setSrc(
 			'dataProvider/CCDDocument.php?' +
             'action=view' +

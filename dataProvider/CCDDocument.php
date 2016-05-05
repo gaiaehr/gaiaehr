@@ -449,7 +449,8 @@ class CCDDocument {
 	/**
 	 * Method export()
 	 */
-	public function export() {
+	public function export()
+    {
 		try {
             // Create a ZIP archive for delivery
 			$dir = site_temp_path . '/';

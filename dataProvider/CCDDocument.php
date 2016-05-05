@@ -29,8 +29,6 @@ session_name('GaiaEHR');
 session_start();
 setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
 
-error_log(print_r($_REQUEST,true));
-
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
 if(!defined('_GaiaEXEC'))
     define('_GaiaEXEC', 1);

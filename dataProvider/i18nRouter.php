@@ -26,7 +26,8 @@ class i18nRouter
      * GaiaEHR Project
      * @return array
      */
-	public static function getTranslation(){
+	public static function getTranslation()
+    {
 		$hasModuleLocales = false;
 
 		if(isset($_SESSION['user']['localization'])){
@@ -34,7 +35,7 @@ class i18nRouter
 		} elseif(defined('site_default_localization')){
 			$loc = site_default_localization;
 		} else{
-			$loc = false;
+			$loc = 'en_US';
 		}
 		// This language file is need by default.
 		include(ROOT . '/langs/en_US.php');
@@ -108,7 +109,8 @@ class i18nRouter
      * Get the default language
      * @return string
      */
-	public static function getDefaultLanguage(){
+	public static function getDefaultLanguage()
+    {
 		if(defined('site_default_localization')){
 			return site_default_localization;
 		} else{
@@ -122,7 +124,8 @@ class i18nRouter
      * @param $key
      * @return mixed
      */
-	public static function t($key){
+	public static function t($key)
+    {
 		$lang = self::getTranslation();
 		return (array_key_exists($key, $lang) ? $lang[$key] : $key);
 	}

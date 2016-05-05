@@ -31,7 +31,8 @@ include_once(MATCHA_ROOT . 'MatchaLog.php');
 if(class_exists('Thread'))
 	include_once(MATCHA_ROOT . 'MatchaThreads.php');
 
-class Matcha {
+class Matcha
+{
 
 	/**
 	 * This would be a Sencha Model parsed by getSenchaModel method

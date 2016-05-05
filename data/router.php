@@ -33,7 +33,6 @@ session_name('GaiaEHR');
 session_start();
 setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
 
-define('_GaiaEXEC', 1);
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
 if(!defined('_GaiaEXEC'))
 	define('_GaiaEXEC', 1);
@@ -57,8 +56,7 @@ if(file_exists($conf)){
     include_once(ROOT . '/dataProvider/Globals.php');
     include_once(ROOT . '/dataProvider/Modules.php');
 
-	if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true))
-    {
+	if(!isset($_SESSION['install']) || (isset($_SESSION['install']) && $_SESSION['install'] != true)) {
         $modules = new Modules();
         $API = array_merge($API, $modules->getEnabledModulesAPI());
     }

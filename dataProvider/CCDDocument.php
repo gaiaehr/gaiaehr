@@ -17,18 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-if(!isset($_SESSION)){
-    session_cache_limiter('private');
-    session_cache_expire(1);
-    session_regenerate_id(false);
-    session_name('GaiaEHR');
-    session_start();
-    setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
-}
-if(!defined('_GaiaEXEC')){
-	define('_GaiaEXEC', 1);
-	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
-}
+header('Content-type: text/html; charset=utf-8');
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+header("Pragma: no-cache"); // HTTP 1.0.
+header("Expires: 0"); // Proxies.
+
+session_cache_limiter('private');
+session_cache_expire(1);
+session_regenerate_id(false);
+session_name('GaiaEHR');
+session_start();
+setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
+
+error_log(print_r($_REQUEST,true));
+
+$site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';
+if(!defined('_GaiaEXEC'))
+    define('_GaiaEXEC', 1);
+require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/registry.php');
 
 include_once(ROOT . '/classes/UUID.php');
 include_once(ROOT . '/classes/Array2XML.php');
@@ -206,7 +212,7 @@ class CCDDocument {
 	 * CCDDocument constructor.
 	 */
 	function __construct()
-	{
+    {
 		$this->dateNow = date('Ymd');
 		$this->timeNow = date('YmdHisO');
 		$this->Encounter = new Encounter();
@@ -223,9 +229,9 @@ class CCDDocument {
      * @param $codeSystem
      * @return string
      */
-    function codes($codeSystem){
-        switch($codeSystem)
-        {
+    function codes($codeSystem)
+    {
+        switch($codeSystem) {
             case 'CPT':
                 return '2.16.840.1.113883.6.12';
                 break;
@@ -279,14 +285,16 @@ class CCDDocument {
 	/**
 	 * @param $pid
 	 */
-	public function setPid($pid) {
+	public function setPid($pid)
+    {
 		$this->pid = $pid;
 	}
 
 	/**
 	 * @param $eid
 	 */
-	public function setEid($eid) {
+	public function setEid($eid)
+    {
 		$this->eid = $eid == 'null' ? null : $eid;
 	}
 
@@ -315,12 +323,11 @@ class CCDDocument {
 	/**
 	 * Method buildCCD()
 	 */
-	public function createCCD() {
+	public function createCCD()
+    {
 		try {
 
-			if(!isset($this->pid)){
-				throw new Exception('PID variable not set');
-			}
+			if(!isset($this->pid)) throw new Exception('PID variable not set');
 
 			$this->xmlData = [
 				'@attributes' => [
@@ -374,15 +381,17 @@ class CCDDocument {
 			/**
 			 * Build the CCR XML Object
 			 */
+            $DeleteQuery = substr(URL, stripos(URL, '?'));
+            $URL = str_replace($DeleteQuery, "", URL);
 			Array2XML::init(
                 '1.0',
                 'UTF-8',
                 true,
-                ['xml-stylesheet' => 'type="text/xsl" href="' . URL . '/lib/CCRCDA/schema/cda2.xsl"']
+                ['xml-stylesheet' => 'type="text/xsl" href="'.$URL.'/lib/CCRCDA/schema/cda2.xsl"']
             );
 			$this->xml = Array2XML::createXML('ClinicalDocument', $this->xmlData);
-		} catch(Exception $e) {
-			print $e->getMessage();
+		} catch(Exception $Error) {
+            error_log($Error->getMessage());
 		}
 	}
 
@@ -393,8 +402,8 @@ class CCDDocument {
 		try {
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
-		} catch(Exception $e) {
-			print $e->getMessage();
+		} catch(Exception $Error) {
+            error_log($Error->getMessage());
 		}
 	}
 
@@ -423,8 +432,8 @@ class CCDDocument {
 			$DocumentHandler->addPatientDocument($document);
 			unset($DocumentHandler, $document, $name, $date);
 			print $xml;
-		} catch(Exception $e) {
-			print $e->getMessage();
+		} catch(Exception $Error) {
+            error_log($Error->getMessage());
 		}
 	}
 
@@ -454,8 +463,8 @@ class CCDDocument {
 			header('Content-Disposition: attachment; filename="' . $filename . '.zip' . '"');
 			readfile($file);
 			unlink($file);
-		} catch(Exception $e) {
-			print $e->getMessage();
+		} catch(Exception $Error) {
+            error_log($Error->getMessage());
 		}
 
 	}
@@ -5735,25 +5744,30 @@ class CCDDocument {
  * Handle the request only if pid and action is available
  */
 if(isset($_REQUEST['pid']) && isset($_REQUEST['action'])){
-	// Check token for security
-	include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
-	include_once(ROOT . '/classes/MatchaHelper.php');
-	$ccd = new CCDDocument();
-	if(isset($_REQUEST['eid']))
-		$ccd->setEid($_REQUEST['eid']);
-	if(isset($_REQUEST['pid']))
-		$ccd->setPid($_REQUEST['pid']);
-	if(isset($_REQUEST['exclude']))
-		$ccd->setExcludes($_REQUEST['exclude']);
-	$ccd->setTemplate('toc');
-	$ccd->createCCD();
+    try {
+        // Check token for security
+        include_once(ROOT . '/sites/' . $_REQUEST['site'] . '/conf.php');
+        include_once(ROOT . '/classes/MatchaHelper.php');
+        $ccd = new CCDDocument();
 
-	if($_REQUEST['action'] == 'view'){
-		$ccd->view();
-	} elseif($_REQUEST['action'] == 'export') {
-		$ccd->export();
-	} elseif($_REQUEST['action'] == 'archive') {
-		$ccd->archive();
-	}
+        if(isset($_REQUEST['eid'])) $ccd->setEid($_REQUEST['eid']);
+        if(isset($_REQUEST['pid'])) $ccd->setPid($_REQUEST['pid']);
+        if(isset($_REQUEST['exclude'])) $ccd->setExcludes($_REQUEST['exclude']);
+        $ccd->setTemplate('toc');
+        $ccd->createCCD();
+
+        switch($_REQUEST['action']){
+            case 'view':
+                $ccd->view();
+                break;
+            case 'export':
+                $ccd->export();
+                break;
+            case 'archive':
+                $ccd->archive();
+                break;
+        }
+    } catch(Exception $Error) {
+        error_log($Error->getMessage());
+    }
 }
-

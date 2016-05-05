@@ -39795,7 +39795,9 @@ Ext.define('App.controller.patient.CCD', {
 
 	onViewCcdBtnClick: function(btn){
 		btn.up('panel').query('miframe')[0].setSrc(
-			'dataProvider/CCDDocument.php?action=view&site=' + window.site +
+			'dataProvider/CCDDocument.php?' +
+            'action=view' +
+            '&site=' + window.site +
 			'&pid=' + app.patient.pid +
 			'&eid=' + this.getEid(btn) +
 			'&exclude=' + this.getExclusions(btn) +
@@ -39805,7 +39807,9 @@ Ext.define('App.controller.patient.CCD', {
 
 	onArchiveCcdBtnClick: function(btn){
 		btn.up('panel').query('miframe')[0].setSrc(
-			'dataProvider/CCDDocument.php?action=archive&site=' + window.site +
+			'dataProvider/CCDDocument.php?' +
+            'action=archive&' +
+            'site=' + window.site +
 			'&pid=' + app.patient.pid +
 			'&eid=' + this.getEid(btn) +
 			'&exclude=' + this.getExclusions(btn) +

@@ -314,7 +314,8 @@ class CCDDocument {
 	/**
 	 * @param $template
 	 */
-	public function setTemplate($template) {
+	public function setTemplate($template)
+    {
 		$this->template = $template;
 	}
 
@@ -379,8 +380,12 @@ class CCDDocument {
 			/**
 			 * Build the CCR XML Object
 			 */
-            $DeleteQuery = substr(URL, stripos(URL, '?'));
-            $URL = str_replace($DeleteQuery, "", URL);
+            if(stripos(URL, '?')){
+                $DeleteQuery = substr(URL, stripos(URL, '?'));
+                $URL = str_replace($DeleteQuery, "", URL);
+            } else {
+                $URL = URL;
+            }
 			Array2XML::init(
                 '1.0',
                 'UTF-8',
@@ -396,7 +401,8 @@ class CCDDocument {
 	/**
 	 * Method view()
 	 */
-	public function view() {
+	public function view()
+    {
 		try {
 			header('Content-type: application/xml');
 			print $this->xml->saveXML();
@@ -408,7 +414,8 @@ class CCDDocument {
 	/**
 	 * Method view()
 	 */
-	public function archive() {
+	public function archive()
+    {
 		try {
 			header('Content-type: application/xml');
 			$xml = $this->xml->saveXML();
@@ -438,7 +445,8 @@ class CCDDocument {
 	/**
 	 * Method get()
 	 */
-	public function get() {
+	public function get()
+    {
 		try {
 			return $this->xml->saveXML();
 		} catch(Exception $e) {
@@ -465,13 +473,13 @@ class CCDDocument {
 		} catch(Exception $Error) {
             error_log($Error->getMessage());
 		}
-
 	}
 
 	/**
 	 * @return string
 	 */
-	private function getFileName(){
+	private function getFileName()
+    {
 	    return strtolower(str_replace(
             ' ',
             '',
@@ -484,7 +492,8 @@ class CCDDocument {
 	 * @param $toDir
 	 * @param $fileName
 	 */
-	public function save($toDir, $fileName) {
+	public function save($toDir, $fileName)
+    {
 		try {
 			$filename = $fileName ? $fileName : $this->getFileName();
 			$this->zipIt($toDir, $filename);
@@ -496,14 +505,16 @@ class CCDDocument {
 	/**
 	 * @return mixed
 	 */
-	private function getTemplateId() {
+	private function getTemplateId()
+    {
 		return $this->templateIds[$this->template];
 	}
 
 	/**
 	 * Method setRequirements()
 	 */
-	private function setRequirements() {
+	private function setRequirements()
+    {
 		if($this->template == 'toc'){
 			$this->requiredAllergies = true;
 			$this->requiredVitals = true;
@@ -521,7 +532,8 @@ class CCDDocument {
 	/**
 	 * Method zipIt()
 	 */
-	private function zipIt($dir, $filename) {
+	private function zipIt($dir, $filename)
+    {
 		$zip = new ZipArchive();
 		$file = $dir . $filename . '.zip';
 		if($zip->open($file, ZipArchive::CREATE) !== true)
@@ -535,7 +547,8 @@ class CCDDocument {
 	/**
 	 * Method setHeader()
 	 */
-	private function setHeader() {
+	private function setHeader()
+    {
 		$this->xmlData['realmCode'] = [
 			'@attributes' => [
 				'code' => 'US'

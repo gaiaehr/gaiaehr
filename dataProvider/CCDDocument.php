@@ -690,6 +690,7 @@ class CCDDocument {
                 'HP'
             );
         }
+        //error_log(print_r($recordTarget['patientRole']['telecom'],true));
 
 		// Patient Name
 		$recordTarget['patientRole']['patient']['name'] = [
@@ -765,7 +766,7 @@ class CCDDocument {
 					'code' => $patientData['race'],
 					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
 					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
-					'codeSystem' => '2.16.840.1.113883.6.238'
+					'codeSystem' => '2.16.840.1.114222.4.11.876'
 				]
 			];
 		} else {
@@ -773,7 +774,7 @@ class CCDDocument {
 				'@attributes' => [
 					'nullFlavor' => 'NA',
 					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
-					'codeSystem' => '2.16.840.1.113883.6.238'
+					'codeSystem' => '2.16.840.1.114222.4.11.876'
 				]
 			];
 		}

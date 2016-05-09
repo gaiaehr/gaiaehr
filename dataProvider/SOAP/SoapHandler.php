@@ -69,7 +69,6 @@ class SoapHandler {
 		];
 
 		if(!isset($patient)) return $response;
-
 		if(	$patient->WebPortalPassword !== $params->Password ||
 			substr($patient->DateOfBirth, 0, 10) !== $params->DateOfBirth )
         {

@@ -22,7 +22,7 @@ session_cache_expire(1);
 session_regenerate_id(false);
 session_name('GaiaEHR');
 session_start();
-setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
+setcookie(session_name(),session_id(),time()+86400, '/', "gaiaphr.com", false, true);
 
 header('Content-type: text/html; charset=utf-8');
 header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.

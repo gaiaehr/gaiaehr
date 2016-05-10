@@ -23,7 +23,7 @@ if(!isset($_SESSION)){
     session_regenerate_id(false);
     session_name('GaiaEHR');
     session_start();
-    setcookie(session_name(),session_id(),time()+86400, '/', null, false, true);
+    setcookie(session_name(),session_id(),time()+86400, '/', "gaiaehr.com", false, true);
 }
 ob_start();
 if(!defined('_GaiaEXEC')) define('_GaiaEXEC', 1);

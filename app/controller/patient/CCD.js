@@ -79,6 +79,7 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
+        btn.up('panel').query('miframe')[0].el.unmask();
 	},
 
 	onArchiveCcdBtnClick: function(btn){
@@ -91,6 +92,7 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
+        btn.up('panel').query('miframe')[0].el.unmask();
 	},
 
 	onExportCcdBtnClick: function(btn){
@@ -101,6 +103,7 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(btn) +
 			'&token=' + app.user.token
 		);
+        btn.up('panel').query('miframe')[0].el.unmask();
 	},
 
 	onPatientCcdPanelEncounterCmbSelect: function(cmb, records){
@@ -112,6 +115,7 @@ Ext.define('App.controller.patient.CCD', {
 			'&exclude=' + this.getExclusions(cmb) +
 			'&token=' + app.user.token
 		);
+        btn.up('panel').query('miframe')[0].el.unmask();
 	},
 
 	onPrintCcdBtnClick: function(btn){

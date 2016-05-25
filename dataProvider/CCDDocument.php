@@ -811,14 +811,47 @@ class CCDDocument {
             ''
         );
 
-		// Patient Prefered language
+		// Patient preferred language communication
 		if(isset($patientData['language']) && $patientData['language'] != ''){
+            // Language Spoken
 			$recordTarget['patientRole']
             ['patient']
             ['languageCommunication']
             ['languageCode']
             ['@attributes']
             ['code'] = $patientData['language'];
+            // How well the patient spoke it
+            $recordTarget['patientRole']
+            ['patient']
+            ['languageCommunication']
+            ['proficiencyLevelCode'] = [
+                '@attributes' => [
+                   'code' => 'G',
+                   'displayName' => 'Good',
+                   'codeSystem' => '2.16.840.1.113883.5.61'
+                ]
+            ];
+            // This is the patient preferred language to sppoke
+            $recordTarget['patientRole']
+            ['patient']
+            ['languageCommunication']
+            ['preferenceInd'] = [
+                '@attributes' => [
+                    'value' => 'true'
+                ]
+            ];
+            // Language Ability Mode
+            $recordTarget['patientRole']
+            ['patient']
+            ['languageCommunication']
+            ['modeCode'] = [
+                '@attributes' => [
+                    'code' => 'ESP',
+                    'displayName' => 'Expressed spoken',
+                    'codeSystem' => '2.16.840.1.113883.5.60',
+                    'codeSystemName' => 'LanguageAbilityMode'
+                ]
+            ];
 		} else {
 			$recordTarget['patientRole']
             ['patient']
@@ -860,7 +893,8 @@ class CCDDocument {
      *
 	 * @return array
 	 */
-	private function getAuthor() {
+	private function getAuthor()
+    {
 		$author = [
 			'time' => [
 				'@attributes' => [
@@ -868,7 +902,6 @@ class CCDDocument {
 				]
 			]
 		];
-
 		$author['assignedAuthor'] = [
 			'id' => [
 				'@attributes' => [
@@ -943,7 +976,8 @@ class CCDDocument {
      *
 	 * @return array
 	 */
-	private function getCustodian() {
+	private function getCustodian()
+    {
 		$custodian = [
 			'assignedCustodian' => [
 				'representedCustodianOrganization' => [
@@ -983,7 +1017,8 @@ class CCDDocument {
      *
 	 * @return array
 	 */
-	private function getInformationRecipient() {
+	private function getInformationRecipient()
+    {
 		$recipient = [
 			'intendedRecipient' => [
 				'informationRecipient' => [
@@ -1011,7 +1046,8 @@ class CCDDocument {
      *
 	 * @return array
 	 */
-	private function getAuthenticator() {
+	private function getAuthenticator()
+    {
 		$authenticator = [
 			'time' => [
 				'@attributes' => [
@@ -1057,7 +1093,8 @@ class CCDDocument {
 	 * Method getDocumentationOf()
 	 * @return array
 	 */
-	private function getDocumentationOf() {
+	private function getDocumentationOf()
+    {
 		$documentationOf = [
 			'serviceEvent' => [
 				'@attributes' => [
@@ -1179,8 +1216,8 @@ class CCDDocument {
      *
 	 * @return mixed
 	 */
-	private function getComponentOf() {
-
+	private function getComponentOf()
+    {
 		$componentOf['encompassingEncounter'] = [
 			'id' => [
 				'@attributes' => [
@@ -1189,13 +1226,11 @@ class CCDDocument {
 				]
 			]
 		];
-
 		$componentOf['encompassingEncounter']['code'] = [
 			'@attributes' => [
 				'nullFlavor' => 'UNK'
 			]
 		];
-
 		$componentOf['encompassingEncounter']['effectiveTime'] = [
 			'low' => [
 				'@attributes' => [
@@ -1211,7 +1246,6 @@ class CCDDocument {
 				]
 			]
 		];
-
 		$responsibleParty = [
 			'assignedEntity' => [
 				'id' => [
@@ -1286,7 +1320,8 @@ class CCDDocument {
 	 * Method getInformant()
 	 * @return array
 	 */
-	private function getInformant() {
+	private function getInformant()
+    {
 		$informant = [];
 
 		$informant['assignedEntity']['id']['@attributes'] = [
@@ -1323,8 +1358,8 @@ class CCDDocument {
      *
 	 * @return array
 	 */
-	private function getDataEnterer() {
-
+	private function getDataEnterer()
+    {
 		$dataEnterer['assignedEntity']['id']['@attributes'] = [
 			'root' => '2.16.840.1.113883.4.6',
 			'extension' => $this->facility['id']
@@ -1355,8 +1390,8 @@ class CCDDocument {
 	 * @param $uid
 	 * @return array|bool
 	 */
-	private function getPerformerByUid($uid) {
-
+	private function getPerformerByUid($uid)
+    {
 		$User = new User();
 		$user = $User->getUser($uid);
 		unset($User);
@@ -1445,11 +1480,13 @@ class CCDDocument {
 	 * Method addSection()
 	 * @param $section
 	 */
-	private function addSection($section) {
+	private function addSection($section)
+    {
 		$this->xmlData['component']['structuredBody']['component'][] = $section;
 	}
 
-	private function setReasonOfVisitSection() {
+	private function setReasonOfVisitSection()
+    {
 		if(isset($this->encounter)){
 			$reason = [
 				'templateId' => [
@@ -1472,7 +1509,8 @@ class CCDDocument {
 		}
 	}
 
-	private function setInstructionsSection() {
+	private function setInstructionsSection()
+    {
 		if(isset($this->encounter)){
 			$soap = $this->Encounter->getSoapByEid($this->encounter['eid']);
 
@@ -1524,7 +1562,8 @@ class CCDDocument {
 		}
 	}
 
-	private function setReasonForReferralSection() {
+	private function setReasonForReferralSection()
+    {
 		if(isset($this->encounter)){
 
 			$Referrals = new Referrals();

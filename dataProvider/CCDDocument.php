@@ -761,10 +761,10 @@ class CCDDocument {
 
 		// Patient Race
 		if(isset($patientData['race']) && $patientData['race'] != ''){
-			$recordTarget['patientRole']['patient']['raceCode'] = [
+			$recordTarget['patientRole']['patient']['sdtc:raceCode'] = [
 				'@attributes' => [
 					'code' => $patientData['race'],
-					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'codeSystemName' => 'Detailed Race',
 					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(14, $patientData['race']),
 					'codeSystem' => '2.16.840.1.114222.4.11.876'
 				]
@@ -773,7 +773,7 @@ class CCDDocument {
 			$recordTarget['patientRole']['patient']['raceCode'] = [
 				'@attributes' => [
 					'nullFlavor' => 'NA',
-					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'codeSystemName' => 'Race & Ethnicity - CDC',
 					'codeSystem' => '2.16.840.1.114222.4.11.876'
 				]
 			];
@@ -784,7 +784,7 @@ class CCDDocument {
 			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = [
 				'@attributes' => [
 					'code' => $patientData['ethnicity'] == 'H' ? '2135-2' : '2186-5',
-					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'codeSystemName' => 'Race & Ethnicity - CDC',
 					'displayName' => $this->CombosData->getDisplayValueByListIdAndOptionValue(
                         59,
                         $patientData['ethnicity']
@@ -796,7 +796,7 @@ class CCDDocument {
 			$recordTarget['patientRole']['patient']['ethnicGroupCode'] = [
 				'@attributes' => [
 					'nullFlavor' => 'NA',
-					'codeSystemName' => 'Race &amp; Ethnicity - CDC',
+					'codeSystemName' => 'Race & Ethnicity - CDC',
 					'codeSystem' => '2.16.840.1.113883.6.238'
 				]
 			];
@@ -910,15 +910,6 @@ class CCDDocument {
 				]
 			]
 		];
-		$author['assignedAuthor']['addr'] = $this->addressBuilder(
-            'WP',
-            $this->facility['address'] . ' ' . $this->facility['address_cont'],
-            $this->facility['city'],
-            $this->facility['state'],
-            $this->facility['postal_code'],
-            $this->facility['country_code']
-        );
-
         // Code
         // https://phinvads.cdc.gov/vads/ViewValueSet.action?id=9FD34BBC-617F-DD11-B38D-00188B398520#
         // TODO: Add a taxonomy field on the users form.
@@ -927,9 +918,17 @@ class CCDDocument {
                 'code' => '163WA2000X',
                 'displayName' => 'Administrator',
                 'codeSystem' => '2.16.840.1.114222.4.11.1066',
-                'codeSystemName' => 'Healthcare Provider Taxonomy (HIPAA)'
+                'codeSystemName' => 'Healthcare Provider Taxonomy (NUCC - HIPAA)'
             ]
         ];
+		$author['assignedAuthor']['addr'] = $this->addressBuilder(
+            'WP',
+            $this->facility['address'] . ' ' . $this->facility['address_cont'],
+            $this->facility['city'],
+            $this->facility['state'],
+            $this->facility['postal_code'],
+            $this->facility['country_code']
+        );
 
 		$author['assignedAuthor']['telecom'] = $this->telecomBuilder(
             $this->facility['phone'],

@@ -226,7 +226,8 @@ class Services {
 					   cpt.code,
 					   cpt.code_text,
 					   cpt.code_text_medium,
-					   cpt.code_text_short
+					   cpt.code_text_short,
+					   e.service_date
                   FROM encounter_services AS ecc
              LEFT JOIN cpt_codes AS cpt ON ecc.code = cpt.code
              LEFT JOIN encounters AS e ON ecc.eid = e.eid

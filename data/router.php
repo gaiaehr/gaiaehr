@@ -20,7 +20,6 @@
 
 // TODO: This ROUTER much be part of Matcha::Connect to handle request from the client,
 // TODO: this way the Matcha::Connect is in control
-
 header('Content-type: text/html; charset=utf-8');
 header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
 header("Pragma: no-cache"); // HTTP 1.0.
@@ -28,9 +27,9 @@ header("Expires: 0"); // Proxies.
 
 session_cache_limiter('private');
 session_cache_expire(1);
-session_regenerate_id(false);
 session_name('GaiaEHR');
 session_start();
+session_regenerate_id(false);
 setcookie(session_name(),session_id(),time()+86400, '/', "gaiaehr.com", false, true);
 
 $site = isset($_SESSION['user']['site']) ? $_SESSION['user']['site'] : 'default';

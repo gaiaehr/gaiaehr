@@ -19,9 +19,9 @@
 
 session_cache_limiter('private');
 session_cache_expire(1);
-session_regenerate_id(false);
 session_name('GaiaEHR');
 session_start();
+session_regenerate_id(false);
 setcookie(session_name(),session_id(),time()+86400, '/', "gaiaphr.com", false, true);
 
 header('Content-type: text/html; charset=utf-8');

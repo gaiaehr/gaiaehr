@@ -20,9 +20,9 @@
 if(!isset($_SESSION)){
     session_cache_limiter('private');
     session_cache_expire(1);
-    session_regenerate_id(false);
     session_name('GaiaEHR');
     session_start();
+    session_regenerate_id(false);
     setcookie(session_name(),session_id(),time()+86400, '/', "gaiaehr.com", false, true);
 }
 ob_start();

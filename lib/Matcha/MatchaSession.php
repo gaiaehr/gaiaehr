@@ -44,9 +44,9 @@ class MatchaSession extends Matcha
 
             session_cache_limiter('private');
             session_cache_expire(1);
-            session_regenerate_id(false);
             session_name($name);
             session_start();
+            session_regenerate_id(false);
             setcookie(session_name(),session_id(),time()+60, '/', null, false, true);
 
             // Securing the Session

@@ -54461,7 +54461,6 @@ Ext.define('App.view.patient.RadOrders', {
 	extend: 'Ext.grid.Panel',
 	requires: [
 		'Ext.grid.plugin.RowEditing',
-		'Ext.grid.feature.Grouping',
 		'Ext.selection.CheckboxModel',
 		'App.ux.combo.Combo',
 		'App.ux.LiveRadsSearch'
@@ -54475,7 +54474,6 @@ Ext.define('App.view.patient.RadOrders', {
 	itemId: 'RadOrders',
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		storeId: 'RadOrderStore',
-		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [
@@ -54488,11 +54486,6 @@ Ext.define('App.view.patient.RadOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowediting',
@@ -54507,8 +54500,6 @@ Ext.define('App.view.patient.RadOrders', {
 				{
 					icon: 'resources/images/icons/cross.png',
 					tooltip: _('remove')
-//					scope: me,
-//					handler: me.onRemoveClick
 				}
 			]
 		},
@@ -54607,6 +54598,7 @@ Ext.define('App.view.patient.RadOrders', {
 		}
 	]
 });
+
 Ext.define('App.view.patient.encounter.CarePlanGoalsNewWindow', {
 	extend: 'Ext.window.Window',
 	requires: [

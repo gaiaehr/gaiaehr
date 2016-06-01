@@ -45148,7 +45148,6 @@ Ext.define('App.view.patient.LabOrders', {
 	},
 	store: Ext.create('App.store.patient.PatientsOrders', {
 		storeId: 'LabOrderStore',
-		groupField: 'date_ordered',
 		remoteFilter: true,
 		pageSize: 200,
 		sorters: [
@@ -45171,11 +45170,6 @@ Ext.define('App.view.patient.LabOrders', {
 	selModel: Ext.create('Ext.selection.CheckboxModel', {
 		showHeaderCheckbox: false
 	}),
-	features: [
-		{
-			ftype: 'grouping'
-		}
-	],
 	plugins: [
 		{
 			ptype: 'rowediting',

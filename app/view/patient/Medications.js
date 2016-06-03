@@ -145,7 +145,11 @@ Ext.define('App.view.patient.Medications', {
 					width: 90,
 					dataIndex: 'begin_date',
 					sortable: false,
-					hideable: false
+					hideable: false,
+                    editor: {
+                        xtype: 'datefield',
+                        format: 'Y-m-d'
+                    }
 				},
 				{
 					xtype: 'datecolumn',

@@ -253,18 +253,6 @@ class Medical {
 	}
 
 	/**
-	 * @param $eid
-	 * @return array
-	 */
-	public function getImmunizationsByEncounterID($eid){
-		$params = new stdClass();
-		$params->filter[0] = new stdClass();
-		$params->filter[0]->property = 'eid';
-		$params->filter[0]->value = $eid;
-		return $this->i->load($params)->all();
-	}
-
-	/**
 	 * @param $pid
 	 * @return array
 	 */

@@ -567,6 +567,7 @@ class Encounter {
 
 		$Immunizations = new Immunizations();
 		$immunizations = $Immunizations->getImmunizationsByEncounterID($eid);
+        
 		if(!empty($immunizations)){
 			$lis = '';
 			foreach($immunizations as $foo){
